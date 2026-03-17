@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:title" content="salaah.co" />
+  <meta property="og:description" content="Your next prayer, wherever you are" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="salaah.co" />
+  <meta name="twitter:description" content="Your next prayer, wherever you are" />
+  <title>salaah.co</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --fg: #1a1a1a;
+      --accent: #5e8460;
+      --border: #1a1a1a;
+      --border-faint: rgba(26,26,26,0.15);
+      --muted: #888;
+      --accent-faint: rgba(94,132,96,0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #262624;
+        --fg: #f0ece4;
+        --accent: #8cc48e;
+        --border: #f0ece4;
+        --border-faint: rgba(240,236,228,0.15);
+        --muted: #777;
+        --accent-faint: rgba(140,196,142,0.1);
+      }
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Courier Prime', monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    #root { width: 100%; display: flex; justify-content: center; }
+
+    .shell {
+      width: 100%;
+      max-width: 600px;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-bottom: 3rem;
+    }
+
+    .rule {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+
+    .label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .prayer-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 14vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      color: var(--fg);
+    }
+
+    .prayer-time {
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      color: var(--accent);
+      font-weight: 700;
+      margin-top: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .countdown {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      letter-spacing: 0.08em;
+      line-height: 1;
+      color: var(--accent);
+      margin-top: 1rem;
+    }
+
+    .location-line {
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .location-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .change-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.6;
+      transition: opacity 0.15s;
+    }
+
+    .change-btn:hover { opacity: 1; }
+
+    .time-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.45;
+      transition: opacity 0.15s;
+      cursor: pointer;
+      min-height: 44px;
+      padding: 0.5rem 0;
+    }
+
+    .time-toggle:hover { opacity: 0.85; }
+
+    .toggle-track {
+      width: 28px;
+      height: 14px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      position: relative;
+      background: transparent;
+      transition: background 0.2s;
+    }
+
+    .toggle-thumb {
+      width: 8px;
+      height: 8px;
+      background: var(--fg);
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+
+    .toggle-thumb.right {
+      transform: translateX(14px);
+    }
+
+    .toggle-label {
+      font-family: "Courier Prime", monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      user-select: none;
+      width: 2.8rem;
+      text-align: left;
+    }
+
+    .loading-msg {
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      animation: blink 1.2s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .form-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .form-subtitle {
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .city-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--fg);
+      font-family: 'Courier Prime', monospace;
+      font-size: max(16px, clamp(1rem, 3vw, 1.25rem));
+      padding: 0.5rem 0;
+      outline: none;
+      letter-spacing: 0.02em;
+    }
+
+    .city-input::placeholder { color: var(--muted); }
+
+    .city-input:focus { caret-color: var(--accent); }
+
+    .suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      z-index: 100;
+      max-height: min(280px, 40vh);
+      overflow-y: auto;
+    }
+
+    .suggestion-item {
+      padding: 0.7rem 1rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.95rem;
+      color: var(--fg);
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-faint);
+    }
+
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: var(--accent-faint); }
+
+    .suggestion-city {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .suggestion-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-top: 0.15rem;
+    }
+
+    .searching-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.6rem;
+      animation: blink 1.2s step-end infinite;
+    }
+
+    .error-msg {
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+    }
+
+    button.retry {
+      margin-top: 1.5rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+    }
+
+    button.retry:hover { background: var(--accent-faint); }
+
+    .all-prayers {
+      margin-top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .prayer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: "Courier Prime", monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    .prayer-row.active {
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 1;
+    }
+
+    .prayer-row-name {
+      font-weight: 400;
+    }
+
+    .prayer-row.active .prayer-row-name {
+      font-weight: 700;
+    }
+
+    .prayer-row-time {
+      font-weight: 400;
+    }
+
+    .prayer-row.active .prayer-row-time {
+      font-weight: 700;
+    }
+
+    .method-note {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: "Courier Prime", monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 10;
+      padding: 0.5rem 1rem;
+      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+      white-space: normal;
+      line-height: 1.6;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const PRAYER_KEYS = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
+    function secondsToHMS(secs) {
+      const h = Math.floor(secs / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      const s = secs % 60;
+      return [h, m, s].map(v => String(v).padStart(2, "0")).join(":");
+    }
+
+    function getNextPrayer(times, timezone) {
+      const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const nowParts = new Date().toLocaleTimeString("en-GB", {
+        timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+      }).split(":").map(Number);
+      const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
+      const prayers = PRAYER_KEYS.map(k => {
+        const [h, m] = times[k].split(":").map(Number);
+        return { name: k, secs: h * 3600 + m * 60, timeStr: times[k] };
+      });
+      const next = prayers.find(p => p.secs > nowSecs);
+      const chosen = next || { name: "Fajr", timeStr: times["Fajr"], secs: null };
+      let secsUntil;
+      if (next) {
+        secsUntil = next.secs - nowSecs;
+      } else {
+        const secsLeftToday = 86400 - nowSecs;
+        const [fh, fm] = times["Fajr"].split(":").map(Number);
+        secsUntil = secsLeftToday + fh * 3600 + fm * 60;
+      }
+      return { name: chosen.name, timeStr: chosen.timeStr, secsUntil };
+    }
+
+    const METHOD_INFO = {
+      1:  { id: 1,  name: "Muslim World League",                       fajr: "18°",   isha: "17°"     },
+      2:  { id: 2,  name: "Islamic Society of North America (ISNA)",   fajr: "15°",   isha: "15°"     },
+      3:  { id: 3,  name: "Egyptian General Authority of Survey",       fajr: "19.5°", isha: "17.5°"   },
+      4:  { id: 4,  name: "Umm al-Qura, Makkah",                       fajr: "18.5°", isha: "90 min"  },
+      5:  { id: 5,  name: "University of Islamic Sciences, Karachi",   fajr: "18°",   isha: "18°"     },
+      7:  { id: 7,  name: "Institute of Geophysics, Tehran",           fajr: "17.7°", isha: "14°"     },
+      11: { id: 11, name: "Majlis Ugama Islam Singapura",              fajr: "20°",   isha: "18°"     },
+      13: { id: 13, name: "Diyanet İşleri Başkanlığı, Turkey",         fajr: "18°",   isha: "17°"     },
+      14: { id: 14, name: "Spiritual Administration of Muslims, Russia", fajr: "16°", isha: "15°"     },
+      15: { id: 15, name: "Moonsighting Committee",                     fajr: "18°",   isha: "18°"     },
+    };
+
+    function getMethodForCountry(country) {
+      if (!country) return 1;
+      const c = country.toLowerCase();
+      if (["united kingdom", "ireland"].some(x => c.includes(x))) return 15;
+      if (["united states", "canada"].some(x => c.includes(x))) return 2;
+      if (["saudi arabia", "united arab emirates", "kuwait", "qatar", "bahrain", "oman"].some(x => c.includes(x))) return 4;
+      if (["egypt"].some(x => c.includes(x))) return 3;
+      if (["pakistan", "india", "bangladesh", "afghanistan"].some(x => c.includes(x))) return 5;
+      if (["malaysia", "singapore"].some(x => c.includes(x))) return 11;
+      if (["iran"].some(x => c.includes(x))) return 7;
+      if (["turkey"].some(x => c.includes(x))) return 13;
+      if (["russia"].some(x => c.includes(x))) return 14;
+      return 1;
+    }
+
+    function fetchWithTimeout(url, ms) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), ms);
+      return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(id));
+    }
+
+    async function fetchPrayerTimes(lat, lon, timezone, country, school, dayOffset) {
+      const today = new Date();
+      if (dayOffset) today.setDate(today.getDate() + dayOffset);
+      const month = today.getMonth() + 1;
+      const year = today.getFullYear();
+      const day = today.getDate();
+      const method = getMethodForCountry(country);
+      const url = "https://api.aladhan.com/v1/calendar/" + year + "/" + month + "?latitude=" + lat + "&longitude=" + lon + "&method=" + method + "&school=" + (school || 0);
+      const res = await fetchWithTimeout(url, 10000);
+      const data = await res.json();
+      if (!data || !data.data || !Array.isArray(data.data)) throw new Error("Unexpected response from prayer times service");
+      const timings = data.data[day - 1] && data.data[day - 1].timings;
+      if (!timings) throw new Error("Prayer times not available for this date");
+      const clean = {};
+      PRAYER_KEYS.forEach(k => { clean[k] = timings[k].split(" ")[0]; });
+      return { times: clean, timezone: timezone, method };
+    }
+
+    async function searchPlaces(query) {
+      const q = encodeURIComponent(query);
+      const res = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${q}&count=8&language=en&format=json`, 8000);
+      const data = await res.json();
+      if (!data.results) return [];
+      return data.results.map(r => {
+        let country = r.country || "";
+        if (!country && r.timezone && r.timezone.includes("Gaza")) country = "Palestinian Territories";
+        if (!country && r.country_code === "PS") country = "Palestinian Territories";
+        if (!country && r.latitude && r.longitude) {
+          const lat = r.latitude, lon = r.longitude;
+          if ((lat >= 31.2 && lat <= 31.6 && lon >= 34.2 && lon <= 34.6) ||
+              (lat >= 31.3 && lat <= 32.6 && lon >= 34.9 && lon <= 35.6)) {
+            country = "Palestinian Territories";
+          }
+        }
+        if (country.toLowerCase().includes("somalia")) {
+          const lat = r.latitude, lon = r.longitude;
+          if (lat >= 8 && lat <= 11.5 && lon >= 42.5 && lon <= 49.5) {
+            country = "Somaliland / Somalia";
+          }
+        }
+        return {
+          name: r.name,
+          admin: r.admin1 || "",
+          country,
+          lat: r.latitude,
+          lon: r.longitude,
+          timezone: r.timezone || "",
+        };
+      });
+    }
+
+    function CitySearch({ onSelect }) {
+      const [query, setQuery] = useState("");
+      const [results, setResults] = useState([]);
+      const [searching, setSearching] = useState(false);
+      const [open, setOpen] = useState(false);
+      const debounceRef = useRef(null);
+      const wrapRef = useRef(null);
+
+      useEffect(() => {
+        function handleClick(e) {
+          if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+        }
+        document.addEventListener("mousedown", handleClick);
+        return () => document.removeEventListener("mousedown", handleClick);
+      }, []);
+
+      function handleChange(e) {
+        const val = e.target.value;
+        setQuery(val);
+        setResults([]);
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        if (val.trim().length < 2) { setSearching(false); setOpen(false); return; }
+        setSearching(true);
+        setOpen(true);
+        debounceRef.current = setTimeout(async () => {
+          try {
+            const places = await searchPlaces(val.trim());
+            setResults(places);
+          } catch {
+            setResults([]);
+          } finally {
+            setSearching(false);
+          }
+        }, 320);
+      }
+
+      function handleSelect(place) {
+        const label = [place.name, place.admin, place.country].filter(Boolean).join(", ");
+        setQuery(label);
+        setOpen(false);
+        setResults([]);
+        onSelect(place);
+      }
+
+      return (
+        <div ref={wrapRef} style={{ position: "relative", width: "100%" }}>
+          <input
+            className="city-input"
+            value={query}
+            onChange={handleChange}
+            onFocus={() => { if (results.length > 0) setOpen(true); }}
+            placeholder="Type any city or town..."
+            autoComplete="off"
+            spellCheck={false}
+          />
+          {searching && <p className="searching-hint">Searching_</p>}
+          {open && !searching && query.trim().length >= 2 && results.length === 0 && (
+            <ul className="suggestions">
+              <li className="suggestion-item">
+                <div className="suggestion-meta">No results — try a different spelling</div>
+              </li>
+            </ul>
+          )}
+          {open && results.length > 0 && (
+            <ul className="suggestions">
+              {results.map((r, i) => (
+                <li key={i} className="suggestion-item" onMouseDown={() => handleSelect(r)}>
+                  <div className="suggestion-city">{r.name}</div>
+                  <div className="suggestion-meta">{[r.admin, r.country].filter(Boolean).join(", ")}</div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      );
+    }
+
+    function App() {
+      const [phase, setPhase] = useState("form");
+      const [location, setLocation] = useState(null);
+      const [prayerTimes, setPrayerTimes] = useState(null);
+      const [nextPrayer, setNextPrayer] = useState(null);
+      const [countdown, setCountdown] = useState("");
+      const [errorMsg, setErrorMsg] = useState("");
+      const [use24h, setUse24h] = useState(true);
+      const [school, setSchool] = useState(0);
+
+      async function loadPrayers(lat, lon, city, region, country, timezone, dayOffset) {
+        setPhase("loading");
+        try {
+          const result = await fetchPrayerTimes(lat, lon, timezone, country, school, dayOffset);
+          const resolvedTz = result.timezone || timezone;
+
+          // If no dayOffset yet, check if Isha has passed — if so re-fetch tomorrow
+          // Only do this if it's still the same calendar day (i.e. before midnight in the city's tz)
+          if (!dayOffset) {
+            const tz = resolvedTz || Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const nowParts = new Date().toLocaleTimeString("en-GB", {
+              timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+            }).split(":").map(Number);
+            const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
+            const [ih, im] = result.times["Isha"].split(":").map(Number);
+            const ishaSecs = ih * 3600 + im * 60;
+            const [fh, fm] = result.times["Fajr"].split(":").map(Number);
+            const fajrSecs = fh * 3600 + fm * 60;
+            // Isha passed and we haven't crossed midnight yet (Fajr is still ahead in the future, not behind)
+            if (nowSecs > ishaSecs && nowSecs > fajrSecs) {
+              loadPrayers(lat, lon, city, region, country, timezone, 1);
+              return;
+            }
+          }
+
+          setPrayerTimes(result.times);
+          setLocation({ city, region, country, timezone: resolvedTz, method: result.method, _lat: lat, _lon: lon });
+          setNextPrayer(getNextPrayer(result.times, resolvedTz));
+          setPhase("ready");
+        } catch (err) {
+          const msg = err && err.name === "AbortError"
+            ? "Request timed out. Check your connection and try again."
+            : "Could not load prayer times. Check your connection and try again.";
+          setErrorMsg(msg);
+          setPhase("error");
+        }
+      }
+
+      useEffect(() => {
+        if (!location) return;
+        loadPrayers(location._lat, location._lon, location.city, location.region, location.country, location.timezone);
+      }, [school]);
+
+      useEffect(() => {
+        if (phase !== "ready" || !prayerTimes || !location) return;
+        const tz = location.timezone;
+        const lat = location._lat;
+        const lon = location._lon;
+        const city = location.city;
+        const region = location.region;
+        const country = location.country;
+        let lastDay = new Date().toLocaleDateString("en-CA", { timeZone: tz });
+
+        const tick = () => {
+          const currentDay = new Date().toLocaleDateString("en-CA", { timeZone: tz });
+          if (currentDay !== lastDay) {
+            lastDay = currentDay;
+            loadPrayers(lat, lon, city, region, country, tz);
+            return;
+          }
+          const np = getNextPrayer(prayerTimes, tz);
+          setNextPrayer(np);
+          setCountdown(secondsToHMS(np.secsUntil));
+        };
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+      }, [phase, prayerTimes, location]);
+
+      async function handleCitySelect(place) {
+        await loadPrayers(place.lat, place.lon, place.name, place.admin, place.country, place.timezone);
+      }
+
+      const formatTime = (prayer) => {
+        if (!prayer) return "";
+        const [h, m] = prayer.timeStr.split(":").map(Number);
+        if (use24h) {
+          return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+        } else {
+          const period = h >= 12 ? "PM" : "AM";
+          const h12 = h % 12 || 12;
+          return h12 + ":" + String(m).padStart(2, "0") + " " + period;
+        }
+      };
+
+      return (
+        <>
+        <div className="shell">
+
+          {phase === "loading" && (
+            <p className="loading-msg">Fetching prayer times_</p>
+          )}
+
+          {phase === "form" && (
+            <div>
+              <div className="form-title">Where are you?</div>
+              <p className="form-subtitle">Enter your city to see your next prayer</p>
+              <div className="rule" />
+              <p className="label">City or town</p>
+              <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
+            </div>
+          )}
+
+          {phase === "ready" && nextPrayer && (
+            <div>
+              <p className="label">Next prayer</p>
+              <div className="prayer-name">{nextPrayer.name}</div>
+              <div className="prayer-time">{formatTime(nextPrayer)}</div>
+
+              <div className="rule" />
+
+              <p className="label">Time remaining</p>
+              <div className="countdown">{countdown}</div>
+
+              <div className="rule" style={{ margin: "1.5rem 0" }} />
+
+              {prayerTimes && (
+                <div className="all-prayers">
+                  {["Fajr","Dhuhr","Asr","Maghrib","Isha"].map(name => (
+                    <div key={name} className={"prayer-row" + (nextPrayer && nextPrayer.name === name ? " active" : "")}>
+                      <span className="prayer-row-name">{name}</span>
+                      <span className="prayer-row-time">{formatTime({ timeStr: prayerTimes[name] })}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="rule" />
+
+              {location && (
+                <p className="location-line">
+                  <span>
+                    {location.city}
+                    {location.region && location.region !== location.city ? `, ${location.region}` : ""}
+                    {location.country ? ` — ${location.country}` : ""}
+                    {location.city && location.city.toLowerCase() === "garadag" && location.country && location.country.toLowerCase().includes("somalia") ? " (BIG UP!)" : ""}
+                  </span>
+                  <div className="location-controls">
+                    <button className="change-btn" onClick={() => { setPhase("form"); setPrayerTimes(null); setNextPrayer(null); setCountdown(""); setLocation(null); }}>
+                      change location
+                    </button>
+                    <div className="time-toggle" onClick={() => setUse24h(p => !p)}>
+                      <div className="toggle-track">
+                        <div className={"toggle-thumb" + (use24h ? "" : " right")} />
+                      </div>
+                      <span className="toggle-label">{use24h ? "am/pm" : "24h"}</span>
+                    </div>
+                  </div>
+                </p>
+              )}
+            </div>
+          )}
+
+          {phase === "error" && (
+            <div>
+              <p className="error-msg">{errorMsg}</p>
+              <button className="retry" onClick={() => { setPhase("form"); setErrorMsg(""); }}>
+                Try again
+              </button>
+            </div>
+          )}
+
+        </div>
+
+        {location && location.method && METHOD_INFO[location.method] && (
+          <p className="method-note">
+            {METHOD_INFO[location.method].name} · Fajr {METHOD_INFO[location.method].fajr} · Isha {METHOD_INFO[location.method].isha}
+            {" · "}
+            <span
+              onClick={() => setSchool(s => s === 0 ? 1 : 0)}
+              style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}
+            >
+              {school === 0 ? "Shafi'i / Maliki / Hanbali" : "Hanafi"} Asr
+            </span>
+          </p>
+        )}
+        </>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+  <script data-goatcounter="https://salaah.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
