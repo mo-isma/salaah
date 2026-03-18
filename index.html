@@ -40,6 +40,33 @@
       }
     }
 
+    [data-theme="dark"] {
+      --bg: #262624;
+      --fg: #f0ece4;
+      --accent: #8cc48e;
+      --border: #f0ece4;
+      --border-faint: rgba(240,236,228,0.15);
+      --muted: #777;
+      --accent-faint: rgba(140,196,142,0.1);
+      color-scheme: dark;
+    }
+
+    [data-theme="light"] {
+      --bg: #f5f0e8;
+      --fg: #1a1a1a;
+      --accent: #5e8460;
+      --border: #1a1a1a;
+      --border-faint: rgba(26,26,26,0.15);
+      --muted: #888;
+      --accent-faint: rgba(94,132,96,0.08);
+      color-scheme: light;
+    }
+
+    [data-theme="dark"] body, [data-theme="light"] body {
+      background: var(--bg);
+      color: var(--fg);
+    }
+
     html, body { height: 100%; }
 
     body {
@@ -350,7 +377,7 @@
       right: 0;
       text-align: center;
       font-family: "Courier Prime", monospace;
-      font-size: 0.6rem;
+      font-size: 0.6rem !important;
       letter-spacing: 0.08em;
       color: var(--muted);
       opacity: 0.35;
@@ -358,11 +385,266 @@
       z-index: 10;
       padding: 0.5rem 1rem;
       padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
-      white-space: normal;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       line-height: 1.6;
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
     }
+
+    @media (orientation: landscape) {
+      .method-note {
+        font-size: 0.6rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    /* ─── Display Mode ─────────────────────────────────────────────────────── */
+
+    .display-mode-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      z-index: 200;
+      opacity: 0.5;
+      transition: opacity 0.15s;
+      padding: 0.5rem;
+    }
+
+    .display-mode-toggle:hover { opacity: 1; }
+
+    .display-mode-toggle svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--fg);
+    }
+
+    body.display-mode {
+      align-items: flex-start;
+    }
+
+    body.display-mode .shell {
+      min-height: 100vh;
+      justify-content: flex-start;
+      padding-top: 3.5rem;
+      padding-bottom: 4rem;
+      overflow-y: auto;
+    }
+
+    .display-masjid {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+      line-height: 1;
+    }
+
+    .display-controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .display-control-btn {
+      background: transparent;
+      border: none;
+      font-family: "Courier Prime", monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.4;
+      transition: opacity 0.15s;
+    }
+
+    .display-control-btn:hover { opacity: 0.8; }
+
+    .display-prayers {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .display-prayer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: 'Courier Prime', monospace;
+      font-size: clamp(0.95rem, 3.5vw, 1.8rem);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--border-faint);
+      font-weight: 400;
+    }
+
+    .display-prayer-row:last-child {
+      border-bottom: none;
+    }
+
+    .display-prayer-row.active {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .masjid-input-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      padding: 2rem;
+    }
+
+    .masjid-input-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .masjid-input-subtitle {
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .masjid-input {
+      width: 100%;
+      max-width: 500px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--fg);
+      font-family: 'Courier Prime', monospace;
+      font-size: max(16px, clamp(1rem, 3vw, 1.25rem));
+      padding: 0.5rem 0;
+      outline: none;
+      letter-spacing: 0.02em;
+      caret-color: var(--accent);
+    }
+
+    .masjid-confirm-btn {
+      margin-top: 2rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.8rem;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    .masjid-confirm-btn:hover { background: var(--accent-faint); }
+
+    /* ─── Last Third Mode ───────────────────────────────────────────────────── */
+    .last-third-screen {
+      width: 100%;
+      max-width: 600px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    .last-third-city {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .last-third-status {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 10vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+    }
+
+    .last-third-countdown {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      letter-spacing: 0.08em;
+      line-height: 1;
+      margin-top: 0.5rem;
+    }
+
+    .last-third-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      margin-top: 1.5rem;
+    }
+
+    .last-third-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0.75rem 1rem;
+      padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+      font-family: "Courier Prime", monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+
+    .last-third-footer a, .last-third-footer button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: "Courier Prime", monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.4;
+      transition: opacity 0.15s;
+      padding: 0.5rem 0;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .last-third-footer a:hover, .last-third-footer button:hover { opacity: 0.8; }
 
   </style>
 </head>
@@ -474,8 +756,19 @@
         }
         if (country.toLowerCase().includes("somalia")) {
           const lat = r.latitude, lon = r.longitude;
-          if (lat >= 8 && lat <= 11.5 && lon >= 42.5 && lon <= 49.5) {
-            country = "Somaliland / Somalia";
+          const somaliaCities = [
+            "las anod", "laascaanood", "lasanod",          // Las Anod variants
+            "taleh", "taleex",                              // Taleh variants
+            "xudun", "hudun",                               // Xudun variants
+            "kalabaydh",                                    // Kalabaydh
+            "adhi addeye", "adhicadeeye", "adhi cadeeye",  // Adhi Addeye variants
+            "yagoori", "yagori",                            // Yagoori variants
+            "bohol",                                        // Bohol
+            "buuhoodle", "buhodle"                          // Buuhoodle variants
+          ];
+          const cityLower = r.name ? r.name.toLowerCase() : "";
+          if (lat >= 8 && lat <= 11.5 && lon >= 42.5 && lon <= 49.5 && !somaliaCities.includes(cityLower)) {
+            country = "Somaliland";
           }
         }
         return {
@@ -575,6 +868,79 @@
       const [errorMsg, setErrorMsg] = useState("");
       const [use24h, setUse24h] = useState(true);
       const [school, setSchool] = useState(0);
+      const [themeOverride, setThemeOverride] = useState(null); // null = system, 'dark', 'light'
+      const [lastThirdMode, setLastThirdMode] = useState(false);
+      const [lastThirdData, setLastThirdData] = useState(null); // { inLastThird, secsUntil, message }
+
+      // Apply theme override via data attribute — avoids overriding CSS variables
+      useEffect(() => {
+        if (themeOverride === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else if (themeOverride === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+      }, [themeOverride]);
+
+      function isDarkMode() {
+        if (themeOverride === 'dark') return true;
+        if (themeOverride === 'light') return false;
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+      const [displayMode, setDisplayMode] = useState(false);
+      const [displayDark, setDisplayDark] = useState(() => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      const [adjustingJamaat, setAdjustingJamaat] = useState(false);
+
+      const flashRef = useRef(null);
+      const lastAlertedRef = useRef({ prayer: null, type: null });
+
+      const [jamaatOffsets, setJamaatOffsets] = useState(() => {
+        try {
+          const saved = localStorage.getItem("jamaat-offsets");
+          return saved ? JSON.parse(saved) : { Fajr: 0, Dhuhr: 0, Asr: 0, Isha: 0 };
+        } catch { return { Fajr: 0, Dhuhr: 0, Asr: 0, Isha: 0 }; }
+      });
+      const [masjidName, setMasjidName] = useState(() => {
+        try { return localStorage.getItem("masjid-name") || ""; } catch { return ""; }
+      });
+      const [showMasjidInput, setShowMasjidInput] = useState(false);
+      const [masjidInputVal, setMasjidInputVal] = useState("");
+      function enterDisplayMode() {
+        if (masjidName) {
+          setDisplayMode(true);
+          document.body.classList.add("display-mode");
+        } else {
+          setMasjidInputVal("");
+          setShowMasjidInput(true);
+        }
+      }
+
+      function exitDisplayMode() {
+        setDisplayMode(false);
+        document.body.classList.remove("display-mode");
+        // themeOverride is applied via data-theme attribute, no manual reset needed
+      }
+
+      function confirmMasjid() {
+        const name = masjidInputVal.trim();
+        if (!name) return;
+        try { localStorage.setItem("masjid-name", name); } catch {}
+        setMasjidName(name);
+        setShowMasjidInput(false);
+        setDisplayMode(true);
+        document.body.classList.add("display-mode");
+      }
+
+      useEffect(() => {
+        if (displayMode) {
+          document.body.style.background = displayDark ? "#1a1a1a" : "#f5f0e8";
+          document.body.style.color = displayDark ? "#f0ece4" : "#1a1a1a";
+        } else {
+          document.body.style.background = "";
+          document.body.style.color = "";
+        }
+      }, [displayMode, displayDark]);
 
       async function loadPrayers(lat, lon, city, region, country, timezone, dayOffset) {
         setPhase("loading");
@@ -645,9 +1011,188 @@
         return () => clearInterval(id);
       }, [phase, prayerTimes, location]);
 
+      // Flash alert for display mode — triggers at prayer start time and jamaat time
+      useEffect(() => {
+        if (!displayMode || !prayerTimes || !nextPrayer || !location) return;
+        const tz = location.timezone;
+
+        const checkFlash = () => {
+          const nowParts = new Date().toLocaleTimeString("en-GB", {
+            timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+          }).split(":").map(Number);
+          const nowH = nowParts[0], nowM = nowParts[1], nowS = nowParts[2];
+
+          PRAYER_KEYS.forEach(prayer => {
+            const [ph, pm] = prayerTimes[prayer].split(":").map(Number);
+
+            // Check start time alert — trigger within 3 second window to avoid missing exact second
+            if (nowH === ph && nowM === pm && nowS <= 3) {
+              const key = prayer + "-start";
+              if (lastAlertedRef.current.key !== key) {
+                lastAlertedRef.current.key = key;
+                triggerFlash();
+              }
+            }
+
+            // Check jamaat time alert (skip Maghrib)
+            if (prayer !== "Maghrib") {
+              const jamaatStr = getJamaatTime(prayer, prayerTimes[prayer], true);
+              if (jamaatStr) {
+                const [jh, jm] = jamaatStr.split(":").map(Number);
+                if (nowH === jh && nowM === jm && nowS <= 3) {
+                  const key = prayer + "-jamaat";
+                  if (lastAlertedRef.current.key !== key) {
+                    lastAlertedRef.current.key = key;
+                    triggerFlash();
+                  }
+                }
+              }
+            }
+          });
+        };
+
+        const id = setInterval(checkFlash, 1000);
+        return () => clearInterval(id);
+      }, [displayMode, prayerTimes, nextPrayer, location, jamaatOffsets]);
+
+      function playAlertTone() {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          [0, 0.45, 0.9].forEach(offset => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = "sine";
+            osc.frequency.value = 880;
+            gain.gain.setValueAtTime(0.35, ctx.currentTime + offset);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + offset + 0.35);
+            osc.start(ctx.currentTime + offset);
+            osc.stop(ctx.currentTime + offset + 0.35);
+          });
+        } catch(e) {}
+      }
+
+      const savedDarkRef = useRef(displayDark);
+      function triggerFlash() {
+        playAlertTone();
+        savedDarkRef.current = displayDark;
+        if (flashRef.current) clearInterval(flashRef.current);
+
+        let count = 0;
+        flashRef.current = setInterval(() => {
+          count++;
+          setDisplayDark(d => !d);
+          if (count >= 20) {
+            clearInterval(flashRef.current);
+
+            setDisplayDark(savedDarkRef.current);
+          }
+        }, 500);
+      }
+
       async function handleCitySelect(place) {
         await loadPrayers(place.lat, place.lon, place.name, place.admin, place.country, place.timezone);
       }
+
+      function getJamaatTime(prayerName, timeStr, use24h) {
+        if (prayerName === "Maghrib") return null;
+        const [h, m] = timeStr.split(":").map(Number);
+        const totalMins = h * 60 + m + 25 + (jamaatOffsets[prayerName] || 0);
+        const rounded = Math.round(totalMins / 5) * 5;
+        const jh = Math.floor(rounded / 60) % 24;
+        const jm = rounded % 60;
+        if (use24h) {
+          return String(jh).padStart(2, "0") + ":" + String(jm).padStart(2, "0");
+        } else {
+          const period = jh >= 12 ? "PM" : "AM";
+          const h12 = jh % 12 || 12;
+          return h12 + ":" + String(jm).padStart(2, "0") + " " + period;
+        }
+      }
+
+      function adjustJamaat(prayer, delta) {
+        setJamaatOffsets(prev => {
+          const next = { ...prev, [prayer]: (prev[prayer] || 0) + delta };
+          try { localStorage.setItem("jamaat-offsets", JSON.stringify(next)); } catch {}
+          return next;
+        });
+      }
+
+      function getDisplayCountdown(nextPrayer, prayerTimes, timezone, use24h) {
+        if (!nextPrayer || !prayerTimes) return { label: "until athan", countdown: "" };
+        const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const nowParts = new Date().toLocaleTimeString("en-GB", {
+          timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+        }).split(":").map(Number);
+        const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
+
+        const [ph, pm] = prayerTimes[nextPrayer.name].split(":").map(Number);
+        const prayerSecs = ph * 3600 + pm * 60;
+
+        // If we've passed the prayer start time and it's not Maghrib, check jamaat
+        if (nowSecs >= prayerSecs && nextPrayer.name !== "Maghrib") {
+          const jamaatStr = getJamaatTime(nextPrayer.name, prayerTimes[nextPrayer.name], true);
+          if (jamaatStr) {
+            const [jh, jm] = jamaatStr.split(":").map(Number);
+            const jamaatSecs = jh * 3600 + jm * 60;
+            if (nowSecs < jamaatSecs) {
+              return { label: "until iqamah", countdown: secondsToHMS(jamaatSecs - nowSecs) };
+            }
+          }
+        }
+
+        return { label: "until athan", countdown: secondsToHMS(nextPrayer.secsUntil) };
+      }
+
+      function getLastThirdData(prayerTimes, timezone) {
+        if (!prayerTimes || !timezone) return null;
+        const tz = timezone;
+        const nowParts = new Date().toLocaleTimeString("en-GB", {
+          timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+        }).split(":").map(Number);
+        const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
+
+        const [mh, mm] = prayerTimes["Maghrib"].split(":").map(Number);
+        const [fh, fm] = prayerTimes["Fajr"].split(":").map(Number);
+        const maghribSecs = mh * 3600 + mm * 60;
+        // Fajr is next day so add 86400 if it's before Maghrib
+        const fajrSecs = (fh * 3600 + fm * 60) + 86400;
+
+        const nightDuration = fajrSecs - maghribSecs;
+        const lastThirdStart = maghribSecs + Math.floor((2 / 3) * nightDuration);
+        const lastThirdEnd = fajrSecs;
+
+        // Normalise nowSecs — if before Maghrib we're in the previous night window
+        let normNow = nowSecs;
+        if (normNow < maghribSecs) normNow += 86400;
+
+        const inLastThird = normNow >= lastThirdStart && normNow < lastThirdEnd;
+
+        let secsUntil;
+        if (inLastThird) {
+          secsUntil = lastThirdEnd - normNow;
+        } else if (normNow < lastThirdStart) {
+          secsUntil = lastThirdStart - normNow;
+        } else {
+          // Past fajr, calculate for next night
+          secsUntil = (86400 - normNow) + (lastThirdStart - maghribSecs);
+        }
+
+        return { inLastThird, secsUntil };
+      }
+
+      // Last third tick
+      useEffect(() => {
+        if (!lastThirdMode || !prayerTimes || !location) return;
+        const tick = () => {
+          const data = getLastThirdData(prayerTimes, location.timezone);
+          setLastThirdData(data);
+        };
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+      }, [lastThirdMode, prayerTimes, location]);
 
       const formatTime = (prayer) => {
         if (!prayer) return "";
@@ -663,7 +1208,233 @@
 
       return (
         <>
-        <div className="shell">
+
+        {/* Last Third Screen */}
+        {lastThirdMode && phase === "ready" && prayerTimes && location && (
+          <div
+            className={"last-third-screen " + (lastThirdData && lastThirdData.inLastThird ? "in-third" : "not-in")}
+            style={{
+              background: lastThirdData && lastThirdData.inLastThird
+                ? (isDarkMode() ? "#1a3d1a" : "#dff2df")
+                : (isDarkMode() ? "#3d1a1a" : "#f2dfdf"),
+              minHeight: "100vh",
+              position: "fixed",
+              top: 0, left: 0, right: 0, bottom: 0,
+              zIndex: 100,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              padding: "2rem 1.5rem 5rem",
+              maxWidth: "100%",
+            }}
+          >
+            <p className="last-third-city">{location.city}{location.country ? ` — ${location.country}` : ""}</p>
+
+            <div className="rule" style={{ marginBottom: "2rem", marginTop: 0, background: lastThirdData && lastThirdData.inLastThird ? "rgba(94,158,94,0.3)" : "rgba(196,94,94,0.3)" }} />
+
+            {lastThirdData && lastThirdData.inLastThird ? (
+              <>
+                <div className="last-third-status" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }}>
+                  It is the last third<br />of the night
+                </div>
+                <p className="last-third-label">ends in</p>
+                <div className="last-third-countdown" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }}>
+                  {secondsToHMS(lastThirdData.secsUntil)}
+                </div>
+                {(() => {
+                  const tz = location.timezone;
+                  const now = new Date();
+                  const target = new Date(now.getTime() + lastThirdData.secsUntil * 1000);
+                  const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
+                  return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#8cc48e" : "#3d7a3d", opacity: 0.6, marginTop: "0.5rem" }}>ends at {timeStr}</p>;
+                })()}
+              </>
+            ) : (
+              <>
+                <div className="last-third-status" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }}>
+                  Not yet the last<br />third of the night
+                </div>
+                <p className="last-third-label">begins in</p>
+                <div className="last-third-countdown" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }}>
+                  {lastThirdData ? secondsToHMS(lastThirdData.secsUntil) : "—"}
+                </div>
+                {lastThirdData && (() => {
+                  const tz = location.timezone;
+                  const now = new Date();
+                  const nowSecs = lastThirdData.secsUntil;
+                  const target = new Date(now.getTime() + nowSecs * 1000);
+                  const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
+                  return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#c48e8e" : "#b04040", opacity: 0.6, marginTop: "0.5rem" }}>begins at {timeStr}</p>;
+                })()}
+              </>
+            )}
+
+            <div className="last-third-footer">
+              <a href="https://sunnah.com/bukhari:7494" target="_blank" rel="noopener noreferrer" style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>hadith</a>
+              <button onClick={() => setLastThirdMode(false)} style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>back</button>
+            </div>
+          </div>
+        )}
+
+        {/* Masjid name input overlay */}
+        {showMasjidInput && (
+          <div className="masjid-input-overlay">
+            <div className="masjid-input-title">Display Mode</div>
+            <p className="masjid-input-subtitle">Enter your masjid name</p>
+            <input
+              className="masjid-input"
+              value={masjidInputVal}
+              onChange={e => setMasjidInputVal(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter") confirmMasjid(); }}
+              placeholder="e.g. Sheffield Central Mosque"
+              autoFocus
+            />
+            <button className="masjid-confirm-btn" onClick={confirmMasjid}>Confirm</button>
+          </div>
+        )}
+
+        {/* Display mode view */}
+        {displayMode && phase === "ready" && nextPrayer && prayerTimes && (
+          <div className="shell">
+            {/* Top right controls: AM/PM + Sun/moon */}
+            <div style={{ position: "fixed", top: "1rem", right: "1rem", display: "flex", alignItems: "center", gap: "0.75rem", zIndex: 200 }}>
+              <div
+                onClick={() => setUse24h(p => !p)}
+                style={{ cursor: "pointer", opacity: 0.5, fontFamily: "Courier Prime, monospace", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: displayDark ? "#f0ece4" : "#1a1a1a", padding: "0.5rem 0", minHeight: "44px", display: "flex", alignItems: "center", transition: "opacity 0.15s" }}
+              >
+                {use24h ? "am/pm" : "24h"}
+              </div>
+              <div className="display-mode-toggle" onClick={() => setDisplayDark(d => !d)} style={{ color: displayDark ? "#f0ece4" : "#1a1a1a", position: "static" }}>
+              {displayDark ? (
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ fill: "#f0ece4" }}><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+              ) : (
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ fill: "#1a1a1a" }}><path d="M12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0-5a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm0 17a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1zm9-9h1a1 1 0 0 1 0 2h-1a1 1 0 0 1 0-2zM3 11h1a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2zm15.364-6.364.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414zM6.343 17.657l.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414zm12.728 0-.707.707a1 1 0 0 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 1.414zM6.343 6.343l-.707.707A1 1 0 0 1 4.222 5.636l.707-.707a1 1 0 0 1 1.414 1.414z"/></svg>
+              )}
+              </div>
+            </div>
+
+            {masjidName && <div className="display-masjid">{masjidName}</div>}
+
+            <p className="label">Next prayer</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 0, lineHeight: 1 }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem, 12vw, 6rem)", letterSpacing: "0.04em", lineHeight: 1 }}>{nextPrayer.name}</div>
+              <div style={{ fontSize: "clamp(1.8rem, 6vw, 3.5rem)", fontWeight: 700, letterSpacing: "0.05em", color: "var(--accent)", lineHeight: 1.1 }}>{formatTime(nextPrayer)}</div>
+            </div>
+
+            <div className="rule" style={{ margin: "1rem 0" }} />
+
+            {(() => {
+              const dc = getDisplayCountdown(nextPrayer, prayerTimes, location && location.timezone, use24h);
+              return (
+                <>
+                  <p className="label">{dc.label}</p>
+                  <div className="countdown" style={{ fontSize: "clamp(1.8rem, 6vw, 3.5rem)" }}>{dc.countdown || countdown}</div>
+                </>
+              );
+            })()}
+
+            <div className="rule" style={{ margin: "1rem 0" }} />
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "0 0 0.4rem", borderBottom: "1px solid " + (displayDark ? "rgba(240,236,228,0.15)" : "rgba(26,26,26,0.15)") }}>
+              <span className="label" style={{ marginBottom: 0 }}>Prayer</span>
+              <span className="label" style={{ textAlign: "center", marginBottom: 0 }}>Start</span>
+              <span className="label" style={{ textAlign: "right", marginBottom: 0 }}>Jamaat</span>
+            </div>
+
+            <div className="display-prayers">
+              {["Fajr","Dhuhr","Asr","Maghrib","Isha"].map(name => {
+                const isActive = nextPrayer && nextPrayer.name === name;
+                const jamaat = getJamaatTime(name, prayerTimes[name], use24h);
+                const iconCol = displayDark ? "#f0ece4" : "#1a1a1a";
+                return (
+                  <div key={name} className={"display-prayer-row" + (isActive ? " active" : "")} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", alignItems: "center" }}>
+                    <span>{name}</span>
+                    <span style={{ textAlign: "center" }}>{formatTime({ timeStr: prayerTimes[name] })}</span>
+                    <span style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.4rem" }}>
+                      {adjustingJamaat && jamaat && (
+                        <button onClick={() => adjustJamaat(name, -5)} style={{ background: "transparent", border: "none", cursor: "pointer", color: iconCol, fontFamily: "Courier Prime, monospace", fontSize: "1.4rem", padding: "0.4rem 0.7rem", minHeight: "44px", opacity: 0.7 }}>−</button>
+                      )}
+                      <span style={{ opacity: jamaat ? 1 : 0.3 }}>{jamaat || "—"}</span>
+                      {adjustingJamaat && jamaat && (
+                        <button onClick={() => adjustJamaat(name, 5)} style={{ background: "transparent", border: "none", cursor: "pointer", color: iconCol, fontFamily: "Courier Prime, monospace", fontSize: "1.4rem", padding: "0.4rem 0.7rem", minHeight: "44px", opacity: 0.7 }}>+</button>
+                      )}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="display-controls">
+              <span className="display-control-btn" style={{ color: displayDark ? "#f0ece4" : "#1a1a1a", textDecoration: "none", opacity: 0.4, cursor: "default" }}>
+                {location && location.city}{location && location.country ? ` — ${location.country}` : ""}
+              </span>
+              <button
+                className="display-control-btn"
+                style={{ color: displayDark ? "#f0ece4" : "#1a1a1a" }}
+                onClick={() => { exitDisplayMode(); setPhase("form"); setPrayerTimes(null); setNextPrayer(null); setCountdown(""); setLocation(null); }}
+              >
+                change city
+              </button>
+              <button
+                className="display-control-btn"
+                style={{ color: displayDark ? "#f0ece4" : "#1a1a1a" }}
+                onClick={() => { setMasjidInputVal(masjidName); setShowMasjidInput(true); setDisplayMode(false); document.body.classList.remove("display-mode"); }}
+              >
+                change masjid name
+              </button>
+              <button
+                className="display-control-btn"
+                style={{ color: displayDark ? "#f0ece4" : "#1a1a1a" }}
+                onClick={() => setAdjustingJamaat(a => !a)}
+              >
+                {adjustingJamaat ? "done" : "adjust jamaat"}
+              </button>
+              {adjustingJamaat && (
+                <button
+                  className="display-control-btn"
+                  style={{ color: displayDark ? "#f0ece4" : "#1a1a1a" }}
+                  onClick={() => {
+                    const reset = { Fajr: 0, Dhuhr: 0, Asr: 0, Isha: 0 };
+                    setJamaatOffsets(reset);
+                    try { localStorage.setItem("jamaat-offsets", JSON.stringify(reset)); } catch {}
+                  }}
+                >
+                  reset jamaat
+                </button>
+              )}
+              <button
+                className="display-control-btn"
+                style={{ color: displayDark ? "#f0ece4" : "#1a1a1a" }}
+                onClick={exitDisplayMode}
+              >
+                exit display mode
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Theme toggle — top right, no box */}
+        {!displayMode && phase === "ready" && (
+          <button
+            onClick={() => setThemeOverride(prev => {
+              if (prev === null) return isDarkMode() ? 'light' : 'dark';
+              if (prev === 'dark') return 'light';
+              return 'dark';
+            })}
+            style={{ position: "fixed", top: "1rem", right: "1rem", background: "transparent", border: "none", cursor: "pointer", opacity: 0.3, transition: "opacity 0.15s", zIndex: 50, padding: "0.5rem", minHeight: "44px", minWidth: "44px", display: "flex", alignItems: "center", justifyContent: "center" }}
+            onMouseEnter={e => e.currentTarget.style.opacity = 0.7}
+            onMouseLeave={e => e.currentTarget.style.opacity = 0.3}
+          >
+            {(themeOverride === 'dark' || (themeOverride === null && isDarkMode())) ? (
+              <svg viewBox="0 0 24 24" width="14" height="14" style={{ fill: "var(--fg)" }}><path d="M12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0-5a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm0 17a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1zm9-9h1a1 1 0 0 1 0 2h-1a1 1 0 0 1 0-2zM3 11h1a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2zm15.364-6.364.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414zM6.343 17.657l.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414zm12.728 0-.707.707a1 1 0 0 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 1.414zM6.343 6.343l-.707.707A1 1 0 0 1 4.222 5.636l.707-.707a1 1 0 0 1 1.414 1.414z"/></svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="14" height="14" style={{ fill: "var(--fg)" }}><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+            )}
+          </button>
+        )}
+
+        {/* Normal view */}
+        {!displayMode && <div className="shell">
 
           {phase === "loading" && (
             <p className="loading-msg">Fetching prayer times_</p>
@@ -712,10 +1483,14 @@
                     {location.region && location.region !== location.city ? `, ${location.region}` : ""}
                     {location.country ? ` — ${location.country}` : ""}
                     {location.city && location.city.toLowerCase() === "garadag" && location.country && location.country.toLowerCase().includes("somalia") ? " (BIG UP!)" : ""}
+                    {location.city && location.city.toLowerCase() === "hobyo" ? " (best beach town on earth!)" : ""}
                   </span>
                   <div className="location-controls">
                     <button className="change-btn" onClick={() => { setPhase("form"); setPrayerTimes(null); setNextPrayer(null); setCountdown(""); setLocation(null); }}>
                       change location
+                    </button>
+                    <button className="change-btn" onClick={() => setLastThirdMode(true)}>
+                      last third
                     </button>
                     <div className="time-toggle" onClick={() => setUse24h(p => !p)}>
                       <div className="toggle-track">
@@ -738,7 +1513,7 @@
             </div>
           )}
 
-        </div>
+        </div>}
 
         {location && location.method && METHOD_INFO[location.method] && (
           <p className="method-note">
@@ -750,6 +1525,28 @@
             >
               {school === 0 ? "Shafi'i / Maliki / Hanbali" : "Hanafi"} Asr
             </span>
+            {displayMode && (
+              <>
+                {" · "}
+                <span
+                  onClick={exitDisplayMode}
+                  style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}
+                >
+                  <svg viewBox="0 0 24 24" width="9" height="9" style={{ fill: "var(--muted)", verticalAlign: "baseline", marginRight: "0.25em" }}><path d="M21 2H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v2H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 14H3V4h18v12z"/></svg>exit display mode
+                </span>
+              </>
+            )}
+            {!displayMode && phase === "ready" && (
+              <>
+                {" · "}
+                <span
+                  onClick={enterDisplayMode}
+                  style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}
+                >
+                  <svg viewBox="0 0 24 24" width="9" height="9" style={{ fill: "var(--muted)", verticalAlign: "baseline", marginRight: "0.25em" }}><path d="M21 2H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v2H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 14H3V4h18v12z"/></svg>display mode
+                </span>
+              </>
+            )}
           </p>
         )}
         </>
