@@ -404,8 +404,9 @@
     /* ─── Last Third Mode ───────────────────────────────────────────────────── */
     .last-third-screen {
       width: 100%;
-      max-width: 600px;
+      max-width: 100%;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -851,6 +852,17 @@
         return { inLastThird, secsUntil };
       }
 
+      // Set body background to match last third screen colour
+      useEffect(() => {
+        if (lastThirdMode && lastThirdData) {
+          document.body.style.background = lastThirdData.inLastThird
+            ? (isDarkMode() ? "#1a3d1a" : "#dff2df")
+            : (isDarkMode() ? "#3d1a1a" : "#f2dfdf");
+        } else if (!lastThirdMode) {
+          document.body.style.background = "";
+        }
+      }, [lastThirdMode, lastThirdData, themeOverride]);
+
       // Last third tick
       useEffect(() => {
         if (!lastThirdMode || !prayerTimes || !location) return;
@@ -894,7 +906,9 @@
               flexDirection: "column",
               justifyContent: "center",
               padding: "2rem 1.5rem 5rem",
+              width: "100%",
               maxWidth: "100%",
+              overflowY: "auto",
             }}
           >
             <p className="last-third-city">{location.city}{location.country ? ` — ${location.country}` : ""}</p>
