@@ -377,7 +377,7 @@
       right: 0;
       text-align: center;
       font-family: "Courier Prime", monospace;
-      font-size: 0.6rem !important;
+      font-size: 0.6rem;
       letter-spacing: 0.08em;
       color: var(--muted);
       opacity: 0.35;
@@ -385,20 +385,19 @@
       z-index: 10;
       padding: 0.5rem 1rem;
       padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
       line-height: 1.6;
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
+      background: var(--bg);
     }
 
     @media (orientation: landscape) {
       .method-note {
-        font-size: 0.6rem !important;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 0.5rem;
+        line-height: 1.4;
+        padding: 0.3rem 1rem;
+        padding-bottom: calc(0.3rem + env(safe-area-inset-bottom));
       }
     }
 
@@ -836,6 +835,7 @@
             placeholder="Type any city or town..."
             autoComplete="off"
             spellCheck={false}
+            autoFocus
           />
           {searching && <p className="searching-hint">Searching_</p>}
           {open && !searching && query.trim().length >= 2 && results.length === 0 && (
@@ -1414,7 +1414,7 @@
         )}
 
         {/* Theme toggle — top right, no box */}
-        {!displayMode && phase === "ready" && (
+        {!displayMode && (phase === "ready" || phase === "form") && (
           <button
             onClick={() => setThemeOverride(prev => {
               if (prev === null) return isDarkMode() ? 'light' : 'dark';
@@ -1444,8 +1444,6 @@
             <div>
               <div className="form-title">Where are you?</div>
               <p className="form-subtitle">Enter your city to see your next prayer</p>
-              <div className="rule" />
-              <p className="label">City or town</p>
               <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
             </div>
           )}
@@ -1532,7 +1530,7 @@
                   onClick={exitDisplayMode}
                   style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}
                 >
-                  <svg viewBox="0 0 24 24" width="9" height="9" style={{ fill: "var(--muted)", verticalAlign: "baseline", marginRight: "0.25em" }}><path d="M21 2H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v2H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 14H3V4h18v12z"/></svg>exit display mode
+                  <svg viewBox="0 0 24 24" width="9" height="9" style={{ fill: "var(--muted)", verticalAlign: "middle", marginRight: "0.25em", marginTop: "-1px" }}><path d="M21 2H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v2H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 14H3V4h18v12z"/></svg>exit display mode
                 </span>
               </>
             )}
@@ -1543,7 +1541,7 @@
                   onClick={enterDisplayMode}
                   style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}
                 >
-                  <svg viewBox="0 0 24 24" width="9" height="9" style={{ fill: "var(--muted)", verticalAlign: "baseline", marginRight: "0.25em" }}><path d="M21 2H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v2H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 14H3V4h18v12z"/></svg>display mode
+                  <svg viewBox="0 0 24 24" width="9" height="9" style={{ fill: "var(--muted)", verticalAlign: "middle", marginRight: "0.25em", marginTop: "-1px" }}><path d="M21 2H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v2H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 14H3V4h18v12z"/></svg>display mode
                 </span>
               </>
             )}
