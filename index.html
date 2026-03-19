@@ -859,11 +859,11 @@ button.retry:hover { background: var(--accent-faint); }
       // Set body background to match last third screen colour
       useEffect(() => {
         if (lastThirdMode && lastThirdData) {
-          document.body.style.background = lastThirdData.inLastThird
+          document.body.style.setProperty('background', lastThirdData.inLastThird
             ? (isDarkMode() ? "#1a3d1a" : "#dff2df")
-            : (isDarkMode() ? "#3d1a1a" : "#f2dfdf");
-        } else if (!lastThirdMode) {
-          document.body.style.background = "";
+            : (isDarkMode() ? "#3d1a1a" : "#f2dfdf"));
+        } else {
+          document.body.style.removeProperty('background');
         }
       }, [lastThirdMode, lastThirdData, themeOverride]);
 
