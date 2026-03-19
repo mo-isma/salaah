@@ -798,6 +798,7 @@
 
       async function handleCitySelect(place) {
         await loadPrayers(place.lat, place.lon, place.name, place.admin, place.country, place.timezone);
+        window.scrollTo(0, 0);
       }
 
       function getLastThirdData(prayerTimes, timezone) {
