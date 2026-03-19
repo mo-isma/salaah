@@ -1048,9 +1048,7 @@ button.retry:hover { background: var(--accent-faint); }
             <div>
               <div className="form-title">Where are you?</div>
               <p className="form-subtitle">Enter your city to see your next prayer</p>
-              <div style={{ marginTop: "2rem" }}>
-                <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
-              </div>
+              <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
             </div>
           )}
 
