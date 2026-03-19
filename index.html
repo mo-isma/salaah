@@ -1156,27 +1156,33 @@
         const [mh, mm] = prayerTimes["Maghrib"].split(":").map(Number);
         const [fh, fm] = prayerTimes["Fajr"].split(":").map(Number);
         const maghribSecs = mh * 3600 + mm * 60;
-        // Fajr is next day so add 86400 if it's before Maghrib
+        // Fajr is always next day relative to Maghrib
         const fajrSecs = (fh * 3600 + fm * 60) + 86400;
-
         const nightDuration = fajrSecs - maghribSecs;
         const lastThirdStart = maghribSecs + Math.floor((2 / 3) * nightDuration);
-        const lastThirdEnd = fajrSecs;
 
-        // Normalise nowSecs — if before Maghrib we're in the previous night window
-        let normNow = nowSecs;
-        if (normNow < maghribSecs) normNow += 86400;
+        // Place nowSecs on the same timeline as Maghrib→Fajr (both anchored to today's Maghrib)
+        // After Maghrib: nowSecs is already in range maghribSecs..86400, use as-is
+        // Before Maghrib (daytime): nowSecs is 0..maghribSecs, shift forward by 86400
+        //   so it sits after Fajr on the same timeline
+        let timelineNow = nowSecs;
+        if (timelineNow < maghribSecs) timelineNow += 86400;
 
-        const inLastThird = normNow >= lastThirdStart && normNow < lastThirdEnd;
+        // Now timelineNow is in range maghribSecs..(maghribSecs + 86400)
+        const inLastThird = timelineNow >= lastThirdStart && timelineNow < fajrSecs;
 
         let secsUntil;
         if (inLastThird) {
-          secsUntil = lastThirdEnd - normNow;
-        } else if (normNow < lastThirdStart) {
-          secsUntil = lastThirdStart - normNow;
+          // Time until Fajr
+          secsUntil = fajrSecs - timelineNow;
+        } else if (timelineNow < lastThirdStart) {
+          // Before last third starts tonight
+          secsUntil = lastThirdStart - timelineNow;
         } else {
-          // Past fajr, calculate for next night
-          secsUntil = (86400 - normNow) + (lastThirdStart - maghribSecs);
+          // Past Fajr (daytime) — count to tonight's last third
+          // timelineNow is in range fajrSecs..(maghribSecs+86400)
+          // Tonight's lastThirdStart is lastThirdStart + 86400 relative to timelineNow's frame
+          secsUntil = (lastThirdStart + 86400) - timelineNow;
         }
 
         return { inLastThird, secsUntil };
