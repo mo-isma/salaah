@@ -856,17 +856,6 @@ button.retry:hover { background: var(--accent-faint); }
         return { inLastThird, secsUntil };
       }
 
-      // Set body background to match last third screen colour
-      useEffect(() => {
-        if (lastThirdMode && lastThirdData) {
-          document.body.style.setProperty('background', lastThirdData.inLastThird
-            ? (isDarkMode() ? "#1a3d1a" : "#dff2df")
-            : (isDarkMode() ? "#3d1a1a" : "#f2dfdf"));
-        } else {
-          document.body.style.removeProperty('background');
-        }
-      }, [lastThirdMode, lastThirdData, themeOverride]);
-
       // Lock correct Maghrib/Fajr when last third screen opens, then tick using those locked times
       useEffect(() => {
         if (!lastThirdMode || !prayerTimes || !location) {
