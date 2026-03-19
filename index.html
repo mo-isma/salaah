@@ -797,6 +797,13 @@
       }, [phase, prayerTimes, location]);
 
       async function handleCitySelect(place) {
+        const ampmCountries = ["united states", "philippines", "australia", "new zealand", "canada"];
+        const c = (place.country || "").toLowerCase();
+        if (ampmCountries.some(x => c.includes(x))) {
+          setUse24h(false);
+        } else {
+          setUse24h(true);
+        }
         await loadPrayers(place.lat, place.lon, place.name, place.admin, place.country, place.timezone);
         window.scrollTo(0, 0);
       }
