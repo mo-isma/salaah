@@ -713,7 +713,6 @@ button.retry:hover { background: var(--accent-faint); }
       const [themeOverride, setThemeOverride] = useState(null); // null = system, 'dark', 'light'
       const [lastThirdMode, setLastThirdMode] = useState(false);
       const [lastThirdData, setLastThirdData] = useState(null); // { inLastThird, secsUntil, message }
-      const [lockedLastThirdTimes, setLockedLastThirdTimes] = useState(null); // { maghrib, fajr } locked when screen opens
 
       // Apply theme override via data attribute — avoids overriding CSS variables
       useEffect(() => {
@@ -856,82 +855,17 @@ button.retry:hover { background: var(--accent-faint); }
         return { inLastThird, secsUntil };
       }
 
-      // Lock correct Maghrib/Fajr when last third screen opens, then tick using those locked times
+      // Last third tick
       useEffect(() => {
-        if (!lastThirdMode || !prayerTimes || !location) {
-          return;
-        }
-
-        async function lockAndStart() {
-          const tz = location.timezone;
-          const nowParts = new Date().toLocaleTimeString("en-GB", {
-            timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
-          }).split(":").map(Number);
-          const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
-          const [fh, fm] = prayerTimes["Fajr"].split(":").map(Number);
-          const fajrSecs = fh * 3600 + fm * 60;
-
-          let maghrib, fajr;
-
-          if (nowSecs < fajrSecs) {
-            // Before Fajr — need yesterday's Maghrib
-            try {
-              const yesterday = new Date();
-              yesterday.setDate(yesterday.getDate() - 1);
-              const m = yesterday.getMonth() + 1;
-              const y = yesterday.getFullYear();
-              const d = yesterday.getDate();
-              const method = location.method || 1;
-              const url = "https://api.aladhan.com/v1/calendar/" + y + "/" + m +
-                "?latitude=" + location._lat + "&longitude=" + location._lon +
-                "&method=" + method + "&school=" + school;
-              const res = await fetchWithTimeout(url, 10000);
-              const data = await res.json();
-              const timings = data.data[d - 1] && data.data[d - 1].timings;
-              maghrib = timings ? timings["Maghrib"].split(" ")[0] : prayerTimes["Maghrib"];
-            } catch {
-              maghrib = prayerTimes["Maghrib"];
-            }
-            fajr = prayerTimes["Fajr"];
-          } else {
-            // After Fajr — use today's Maghrib and tomorrow's Fajr
-            maghrib = prayerTimes["Maghrib"];
-            // Fetch tomorrow's Fajr
-            try {
-              const tomorrow = new Date();
-              tomorrow.setDate(tomorrow.getDate() + 1);
-              const m = tomorrow.getMonth() + 1;
-              const y = tomorrow.getFullYear();
-              const d = tomorrow.getDate();
-              const method = location.method || 1;
-              const url = "https://api.aladhan.com/v1/calendar/" + y + "/" + m +
-                "?latitude=" + location._lat + "&longitude=" + location._lon +
-                "&method=" + method + "&school=" + school;
-              const res = await fetchWithTimeout(url, 10000);
-              const data = await res.json();
-              const timings = data.data[d - 1] && data.data[d - 1].timings;
-              fajr = timings ? timings["Fajr"].split(" ")[0] : prayerTimes["Fajr"];
-            } catch {
-              fajr = prayerTimes["Fajr"];
-            }
-          }
-
-          const locked = { maghrib, fajr };
-          setLockedLastThirdTimes(locked);
-
-          const tick = () => {
-            const data = getLastThirdData({ ...prayerTimes, Maghrib: locked.maghrib, Fajr: locked.fajr }, tz);
-            setLastThirdData(data);
-          };
-          tick();
-          const id = setInterval(tick, 1000);
-          return id;
-        }
-
-        let intervalId;
-        lockAndStart().then(id => { intervalId = id; });
-        return () => { if (intervalId) clearInterval(intervalId); };
-      }, [lastThirdMode, location]);
+        if (!lastThirdMode || !prayerTimes || !location) return;
+        const tick = () => {
+          const data = getLastThirdData(prayerTimes, location.timezone);
+          setLastThirdData(data);
+        };
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+      }, [lastThirdMode, prayerTimes, location]);
 
       const formatTime = (prayer) => {
         if (!prayer) return "";
