@@ -859,7 +859,6 @@ button.retry:hover { background: var(--accent-faint); }
       // Lock correct Maghrib/Fajr when last third screen opens, then tick using those locked times
       useEffect(() => {
         if (!lastThirdMode || !prayerTimes || !location) {
-          if (!lastThirdMode) setLockedLastThirdTimes(null);
           return;
         }
 
@@ -1049,7 +1048,9 @@ button.retry:hover { background: var(--accent-faint); }
             <div>
               <div className="form-title">Where are you?</div>
               <p className="form-subtitle">Enter your city to see your next prayer</p>
-              <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
+              <div style={{ marginTop: "2rem" }}>
+                <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
+              </div>
             </div>
           )}
 
