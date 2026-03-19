@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -19,473 +18,471 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-```
-:root {
-  --bg: #f5f0e8;
-  --fg: #1a1a1a;
-  --accent: #5e8460;
-  --border: #1a1a1a;
-  --border-faint: rgba(26,26,26,0.15);
-  --muted: #888;
-  --accent-faint: rgba(94,132,96,0.08);
-}
+    :root {
+      --bg: #f5f0e8;
+      --fg: #1a1a1a;
+      --accent: #5e8460;
+      --border: #1a1a1a;
+      --border-faint: rgba(26,26,26,0.15);
+      --muted: #888;
+      --accent-faint: rgba(94,132,96,0.08);
+    }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #262624;
-    --fg: #f0ece4;
-    --accent: #8cc48e;
-    --border: #f0ece4;
-    --border-faint: rgba(240,236,228,0.15);
-    --muted: #777;
-    --accent-faint: rgba(140,196,142,0.1);
-  }
-}
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #262624;
+        --fg: #f0ece4;
+        --accent: #8cc48e;
+        --border: #f0ece4;
+        --border-faint: rgba(240,236,228,0.15);
+        --muted: #777;
+        --accent-faint: rgba(140,196,142,0.1);
+      }
+    }
 
-[data-theme="dark"] {
-  --bg: #262624;
-  --fg: #f0ece4;
-  --accent: #8cc48e;
-  --border: #f0ece4;
-  --border-faint: rgba(240,236,228,0.15);
-  --muted: #777;
-  --accent-faint: rgba(140,196,142,0.1);
-  color-scheme: dark;
-}
+    [data-theme="dark"] {
+      --bg: #262624;
+      --fg: #f0ece4;
+      --accent: #8cc48e;
+      --border: #f0ece4;
+      --border-faint: rgba(240,236,228,0.15);
+      --muted: #777;
+      --accent-faint: rgba(140,196,142,0.1);
+      color-scheme: dark;
+    }
 
-[data-theme="light"] {
-  --bg: #f5f0e8;
-  --fg: #1a1a1a;
-  --accent: #5e8460;
-  --border: #1a1a1a;
-  --border-faint: rgba(26,26,26,0.15);
-  --muted: #888;
-  --accent-faint: rgba(94,132,96,0.08);
-  color-scheme: light;
-}
+    [data-theme="light"] {
+      --bg: #f5f0e8;
+      --fg: #1a1a1a;
+      --accent: #5e8460;
+      --border: #1a1a1a;
+      --border-faint: rgba(26,26,26,0.15);
+      --muted: #888;
+      --accent-faint: rgba(94,132,96,0.08);
+      color-scheme: light;
+    }
 
-[data-theme="dark"] body, [data-theme="light"] body {
-  background: var(--bg);
-  color: var(--fg);
-}
+    [data-theme="dark"] body, [data-theme="light"] body {
+      background: var(--bg);
+      color: var(--fg);
+    }
 
-html, body { height: 100%; }
+    html, body { height: 100%; }
 
-body {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: 'Courier Prime', monospace;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-}
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Courier Prime', monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
 
-#root { width: 100%; display: flex; justify-content: center; }
+    #root { width: 100%; display: flex; justify-content: center; }
 
-.shell {
-  width: 100%;
-  max-width: 600px;
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-bottom: 5rem;
-}
+    .shell {
+      width: 100%;
+      max-width: 600px;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-bottom: 5rem;
+    }
 
-.rule {
-  width: 100%;
-  height: 1px;
-  background: var(--border);
-  margin: 2rem 0;
-}
+    .rule {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
 
-.label {
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-}
+    .label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
 
-.prayer-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3.5rem, 14vw, 7rem);
-  line-height: 0.9;
-  letter-spacing: 0.04em;
-  color: var(--fg);
-}
+    .prayer-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 14vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      color: var(--fg);
+    }
 
-.prayer-time {
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  color: var(--accent);
-  font-weight: 700;
-  margin-top: 0.5rem;
-  letter-spacing: 0.05em;
-}
+    .prayer-time {
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      color: var(--accent);
+      font-weight: 700;
+      margin-top: 0.5rem;
+      letter-spacing: 0.05em;
+    }
 
-.countdown {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  letter-spacing: 0.08em;
-  line-height: 1;
-  color: var(--accent);
-  margin-top: 1rem;
-}
+    .countdown {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      letter-spacing: 0.08em;
+      line-height: 1;
+      color: var(--accent);
+      margin-top: 1rem;
+    }
 
-.location-line {
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  text-transform: uppercase;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+    .location-line {
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
 
-.location-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+    .location-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
 
-.change-btn {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 0.5rem 0;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  opacity: 0.6;
-  transition: opacity 0.15s;
-}
+    .change-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.6;
+      transition: opacity 0.15s;
+    }
 
-.change-btn:hover { opacity: 1; }
+    .change-btn:hover { opacity: 1; }
 
-.time-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  opacity: 0.45;
-  transition: opacity 0.15s;
-  cursor: pointer;
-  min-height: 44px;
-  padding: 0.5rem 0;
-}
+    .time-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.45;
+      transition: opacity 0.15s;
+      cursor: pointer;
+      min-height: 44px;
+      padding: 0.5rem 0;
+    }
 
-.time-toggle:hover { opacity: 0.85; }
+    .time-toggle:hover { opacity: 0.85; }
 
-.toggle-track {
-  width: 28px;
-  height: 14px;
-  border: 1px solid var(--border);
-  border-radius: 0;
-  position: relative;
-  background: transparent;
-  transition: background 0.2s;
-}
+    .toggle-track {
+      width: 28px;
+      height: 14px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      position: relative;
+      background: transparent;
+      transition: background 0.2s;
+    }
 
-.toggle-thumb {
-  width: 8px;
-  height: 8px;
-  background: var(--fg);
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.2s;
-}
+    .toggle-thumb {
+      width: 8px;
+      height: 8px;
+      background: var(--fg);
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
 
-.toggle-thumb.right {
-  transform: translateX(14px);
-}
+    .toggle-thumb.right {
+      transform: translateX(14px);
+    }
 
-.toggle-label {
-  font-family: "Courier Prime", monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  user-select: none;
-  width: 2.8rem;
-  text-align: left;
-}
+    .toggle-label {
+      font-family: "Courier Prime", monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      user-select: none;
+      width: 2.8rem;
+      text-align: left;
+    }
 
-.loading-msg {
-  font-size: 1rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  animation: blink 1.2s step-end infinite;
-}
+    .loading-msg {
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      animation: blink 1.2s step-end infinite;
+    }
 
-@keyframes blink { 50% { opacity: 0; } }
+    @keyframes blink { 50% { opacity: 0; } }
 
-.form-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2rem, 8vw, 3.5rem);
-  letter-spacing: 0.04em;
-  line-height: 1;
-}
+    .form-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
 
-.form-subtitle {
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 0.5rem;
-}
+    .form-subtitle {
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
 
-.city-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  color: var(--fg);
-  font-family: 'Courier Prime', monospace;
-  font-size: max(16px, clamp(1rem, 3vw, 1.25rem));
-  padding: 0.5rem 0;
-  outline: none;
-  letter-spacing: 0.02em;
-}
+    .city-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--fg);
+      font-family: 'Courier Prime', monospace;
+      font-size: max(16px, clamp(1rem, 3vw, 1.25rem));
+      padding: 0.5rem 0;
+      outline: none;
+      letter-spacing: 0.02em;
+    }
 
-.city-input::placeholder { color: var(--muted); }
+    .city-input::placeholder { color: var(--muted); }
 
-.city-input:focus { caret-color: var(--accent); }
+    .city-input:focus { caret-color: var(--accent); }
 
-.suggestions {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  z-index: 100;
-  max-height: min(280px, 40vh);
-  overflow-y: auto;
-}
+    .suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      z-index: 100;
+      max-height: min(280px, 40vh);
+      overflow-y: auto;
+    }
 
-.suggestion-item {
-  padding: 0.7rem 1rem;
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.95rem;
-  color: var(--fg);
-  cursor: pointer;
-  border-bottom: 1px solid var(--border-faint);
-}
+    .suggestion-item {
+      padding: 0.7rem 1rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.95rem;
+      color: var(--fg);
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-faint);
+    }
 
-.suggestion-item:last-child { border-bottom: none; }
-.suggestion-item:hover { background: var(--accent-faint); }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: var(--accent-faint); }
 
-.suggestion-city {
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
+    .suggestion-city {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
 
-.suggestion-meta {
-  font-size: 0.78rem;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  margin-top: 0.15rem;
-}
+    .suggestion-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-top: 0.15rem;
+    }
 
-.searching-hint {
-  font-size: 0.72rem;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-top: 0.6rem;
-  animation: blink 1.2s step-end infinite;
-}
+    .searching-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.6rem;
+      animation: blink 1.2s step-end infinite;
+    }
 
-.error-msg {
-  font-size: 0.9rem;
-  color: var(--accent);
-  letter-spacing: 0.04em;
-  line-height: 1.6;
-}
+    .error-msg {
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+    }
 
-button.retry {
-  margin-top: 1.5rem;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--fg);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.6rem 1.2rem;
-  cursor: pointer;
-}
+    button.retry {
+      margin-top: 1.5rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+    }
 
-button.retry:hover { background: var(--accent-faint); }
+    button.retry:hover { background: var(--accent-faint); }
 
-.all-prayers {
-  margin-top: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
+    .all-prayers {
+      margin-top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
 
-.prayer-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  font-family: "Courier Prime", monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  opacity: 0.6;
-}
+    .prayer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: "Courier Prime", monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.6;
+    }
 
-.prayer-row.active {
-  font-weight: 700;
-  color: var(--accent);
-  opacity: 1;
-}
+    .prayer-row.active {
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 1;
+    }
 
-.prayer-row-name {
-  font-weight: 400;
-}
+    .prayer-row-name {
+      font-weight: 400;
+    }
 
-.prayer-row.active .prayer-row-name {
-  font-weight: 700;
-}
+    .prayer-row.active .prayer-row-name {
+      font-weight: 700;
+    }
 
-.prayer-row-time {
-  font-weight: 400;
-}
+    .prayer-row-time {
+      font-weight: 400;
+    }
 
-.prayer-row.active .prayer-row-time {
-  font-weight: 700;
-}
+    .prayer-row.active .prayer-row-time {
+      font-weight: 700;
+    }
 
-.method-note {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-family: "Courier Prime", monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 10;
-  padding: 1.2rem 1rem 0.5rem;
-  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
-  white-space: normal;
-  line-height: 1.6;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  background: var(--bg);
-}
+    .method-note {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: "Courier Prime", monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 10;
+      padding: 1.2rem 1rem 0.5rem;
+      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+      white-space: normal;
+      line-height: 1.6;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      background: var(--bg);
+    }
 
-@media (orientation: landscape) {
-  .method-note {
-    font-size: 0.5rem;
-    line-height: 1.4;
-    padding: 0.3rem 1rem;
-    padding-bottom: calc(0.3rem + env(safe-area-inset-bottom));
-  }
-}
+    @media (orientation: landscape) {
+      .method-note {
+        font-size: 0.5rem;
+        line-height: 1.4;
+        padding: 0.3rem 1rem;
+        padding-bottom: calc(0.3rem + env(safe-area-inset-bottom));
+      }
+    }
 
-/* ─── Last Third Mode ───────────────────────────────────────────────────── */
-.last-third-screen {
-  width: 100%;
-  max-width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 2rem 1.5rem 5rem;
-}
+    /* ─── Last Third Mode ───────────────────────────────────────────────────── */
+    .last-third-screen {
+      width: 100%;
+      max-width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem 1.5rem 5rem;
+    }
 
-.last-third-city {
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 2rem;
-}
+    .last-third-city {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
 
-.last-third-status {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2.5rem, 10vw, 5rem);
-  line-height: 0.95;
-  letter-spacing: 0.04em;
-  margin-bottom: 1rem;
-}
+    .last-third-status {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 10vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+    }
 
-.last-third-countdown {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  letter-spacing: 0.08em;
-  line-height: 1;
-  margin-top: 0.5rem;
-}
+    .last-third-countdown {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      letter-spacing: 0.08em;
+      line-height: 1;
+      margin-top: 0.5rem;
+    }
 
-.last-third-label {
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.4rem;
-  margin-top: 1.5rem;
-}
+    .last-third-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      margin-top: 1.5rem;
+    }
 
-.last-third-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  padding: 0.75rem 1rem;
-  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
-  font-family: "Courier Prime", monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
+    .last-third-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0.75rem 1rem;
+      padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+      font-family: "Courier Prime", monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
 
-.last-third-footer a, .last-third-footer button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-family: "Courier Prime", monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  opacity: 0.4;
-  transition: opacity 0.15s;
-  padding: 0.5rem 0;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-}
+    .last-third-footer a, .last-third-footer button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: "Courier Prime", monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.4;
+      transition: opacity 0.15s;
+      padding: 0.5rem 0;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
 
-.last-third-footer a:hover, .last-third-footer button:hover { opacity: 0.8; }
-```
+    .last-third-footer a:hover, .last-third-footer button:hover { opacity: 0.8; }
 
   </style>
 </head>
@@ -598,14 +595,14 @@ button.retry:hover { background: var(--accent-faint); }
         if (country.toLowerCase().includes("somalia")) {
           const lat = r.latitude, lon = r.longitude;
           const somaliaCities = [
-            "las anod", "laascaanood", "lasanod",
-            "taleh", "taleex",
-            "xudun", "hudun",
-            "kalabaydh",
-            "adhi addeye", "adhicadeeye", "adhi cadeeye",
-            "yagoori", "yagori",
-            "bohol",
-            "buuhoodle", "buhodle"
+            "las anod", "laascaanood", "lasanod",          // Las Anod variants
+            "taleh", "taleex",                              // Taleh variants
+            "xudun", "hudun",                               // Xudun variants
+            "kalabaydh",                                    // Kalabaydh
+            "adhi addeye", "adhicadeeye", "adhi cadeeye",  // Adhi Addeye variants
+            "yagoori", "yagori",                            // Yagoori variants
+            "bohol",                                        // Bohol
+            "buuhoodle", "buhodle"                          // Buuhoodle variants
           ];
           const cityLower = r.name ? r.name.toLowerCase() : "";
           if (lat >= 8 && lat <= 11.5 && lon >= 42.5 && lon <= 49.5 && !somaliaCities.includes(cityLower)) {
@@ -710,11 +707,11 @@ button.retry:hover { background: var(--accent-faint); }
       const [errorMsg, setErrorMsg] = useState("");
       const [use24h, setUse24h] = useState(true);
       const [school, setSchool] = useState(0);
-      const [themeOverride, setThemeOverride] = useState(null);
+      const [themeOverride, setThemeOverride] = useState(null); // null = system, 'dark', 'light'
       const [lastThirdMode, setLastThirdMode] = useState(false);
-      const [lastThirdData, setLastThirdData] = useState(null);
-      const [lockedTimes, setLockedTimes] = useState(null);
+      const [lastThirdData, setLastThirdData] = useState(null); // { inLastThird, secsUntil, message }
 
+      // Apply theme override via data attribute — avoids overriding CSS variables
       useEffect(() => {
         if (themeOverride === 'dark') {
           document.documentElement.setAttribute('data-theme', 'dark');
@@ -737,6 +734,8 @@ button.retry:hover { background: var(--accent-faint); }
           const result = await fetchPrayerTimes(lat, lon, timezone, country, school, dayOffset);
           const resolvedTz = result.timezone || timezone;
 
+          // If no dayOffset yet, check if Isha has passed — if so re-fetch tomorrow
+          // Only do this if it's still the same calendar day (i.e. before midnight in the city's tz)
           if (!dayOffset) {
             const tz = resolvedTz || Intl.DateTimeFormat().resolvedOptions().timeZone;
             const nowParts = new Date().toLocaleTimeString("en-GB", {
@@ -747,6 +746,7 @@ button.retry:hover { background: var(--accent-faint); }
             const ishaSecs = ih * 3600 + im * 60;
             const [fh, fm] = result.times["Fajr"].split(":").map(Number);
             const fajrSecs = fh * 3600 + fm * 60;
+            // Isha passed and we haven't crossed midnight yet (Fajr is still ahead in the future, not behind)
             if (nowSecs > ishaSecs && nowSecs > fajrSecs) {
               loadPrayers(lat, lon, city, region, country, timezone, 1);
               return;
@@ -820,27 +820,39 @@ button.retry:hover { background: var(--accent-faint); }
         const [mh, mm] = prayerTimes["Maghrib"].split(":").map(Number);
         const [fh, fm] = prayerTimes["Fajr"].split(":").map(Number);
         const maghribSecs = mh * 3600 + mm * 60;
+        // Fajr is always next day relative to Maghrib
         const fajrSecs = (fh * 3600 + fm * 60) + 86400;
         const nightDuration = fajrSecs - maghribSecs;
         const lastThirdStart = maghribSecs + Math.floor((2 / 3) * nightDuration);
 
+        // Place nowSecs on the same timeline as Maghrib→Fajr (both anchored to today's Maghrib)
+        // After Maghrib: nowSecs is already in range maghribSecs..86400, use as-is
+        // Before Maghrib (daytime): nowSecs is 0..maghribSecs, shift forward by 86400
+        //   so it sits after Fajr on the same timeline
         let timelineNow = nowSecs;
         if (timelineNow < maghribSecs) timelineNow += 86400;
 
+        // Now timelineNow is in range maghribSecs..(maghribSecs + 86400)
         const inLastThird = timelineNow >= lastThirdStart && timelineNow < fajrSecs;
 
         let secsUntil;
         if (inLastThird) {
+          // Time until Fajr
           secsUntil = fajrSecs - timelineNow;
         } else if (timelineNow < lastThirdStart) {
+          // Before last third starts tonight
           secsUntil = lastThirdStart - timelineNow;
         } else {
+          // Past Fajr (daytime) — count to tonight's last third
+          // timelineNow is in range fajrSecs..(maghribSecs+86400)
+          // Tonight's lastThirdStart is lastThirdStart + 86400 relative to timelineNow's frame
           secsUntil = (lastThirdStart + 86400) - timelineNow;
         }
 
         return { inLastThird, secsUntil };
       }
 
+      // Set body background to match last third screen colour
       useEffect(() => {
         if (lastThirdMode && lastThirdData) {
           document.body.style.background = lastThirdData.inLastThird
@@ -851,73 +863,17 @@ button.retry:hover { background: var(--accent-faint); }
         }
       }, [lastThirdMode, lastThirdData, themeOverride]);
 
+      // Last third tick
       useEffect(() => {
-        if (!lastThirdMode || !prayerTimes || !location) {
-          if (!lastThirdMode) setLockedTimes(null);
-          return;
-        }
-
-        async function lockAndTick() {
-          const tz = location.timezone;
-          const nowParts = new Date().toLocaleTimeString("en-GB", {
-            timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
-          }).split(":").map(Number);
-          const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
-          const [fh, fm] = prayerTimes["Fajr"].split(":").map(Number);
-          const fajrSecs = fh * 3600 + fm * 60;
-
-          let maghrib, fajr;
-
-          if (nowSecs < fajrSecs) {
-            // Before today's Fajr — need yesterday's Maghrib paired with today's Fajr
-            fajr = prayerTimes["Fajr"];
-            try {
-              const d = new Date();
-              d.setDate(d.getDate() - 1);
-              const url = "https://api.aladhan.com/v1/calendar/" + d.getFullYear() + "/" + (d.getMonth() + 1) +
-                "?latitude=" + location._lat + "&longitude=" + location._lon +
-                "&method=" + location.method + "&school=" + school;
-              const res = await fetchWithTimeout(url, 10000);
-              const data = await res.json();
-              const timings = data.data[d.getDate() - 1] && data.data[d.getDate() - 1].timings;
-              maghrib = timings ? timings["Maghrib"].split(" ")[0] : prayerTimes["Maghrib"];
-            } catch {
-              maghrib = prayerTimes["Maghrib"];
-            }
-          } else {
-            // After today's Fajr — use today's Maghrib paired with tomorrow's Fajr
-            maghrib = prayerTimes["Maghrib"];
-            try {
-              const d = new Date();
-              d.setDate(d.getDate() + 1);
-              const url = "https://api.aladhan.com/v1/calendar/" + d.getFullYear() + "/" + (d.getMonth() + 1) +
-                "?latitude=" + location._lat + "&longitude=" + location._lon +
-                "&method=" + location.method + "&school=" + school;
-              const res = await fetchWithTimeout(url, 10000);
-              const data = await res.json();
-              const timings = data.data[d.getDate() - 1] && data.data[d.getDate() - 1].timings;
-              fajr = timings ? timings["Fajr"].split(" ")[0] : prayerTimes["Fajr"];
-            } catch {
-              fajr = prayerTimes["Fajr"];
-            }
-          }
-
-          const locked = { maghrib, fajr };
-          setLockedTimes(locked);
-
-          const tick = () => {
-            const data = getLastThirdData({ ...prayerTimes, Maghrib: locked.maghrib, Fajr: locked.fajr }, tz);
-            setLastThirdData(data);
-          };
-          tick();
-          const id = setInterval(tick, 1000);
-          return id;
-        }
-
-        let intervalId;
-        lockAndTick().then(id => { intervalId = id; });
-        return () => { if (intervalId) clearInterval(intervalId); };
-      }, [lastThirdMode, location]);
+        if (!lastThirdMode || !prayerTimes || !location) return;
+        const tick = () => {
+          const data = getLastThirdData(prayerTimes, location.timezone);
+          setLastThirdData(data);
+        };
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+      }, [lastThirdMode, prayerTimes, location]);
 
       const formatTime = (prayer) => {
         if (!prayer) return "";
@@ -934,6 +890,7 @@ button.retry:hover { background: var(--accent-faint); }
       return (
         <>
 
+        {/* Last Third Screen */}
         {lastThirdMode && phase === "ready" && prayerTimes && location && (
           <div
             className={"last-third-screen " + (lastThirdData && lastThirdData.inLastThird ? "in-third" : "not-in")}
@@ -1002,6 +959,7 @@ button.retry:hover { background: var(--accent-faint); }
           </div>
         )}
 
+        {/* Theme toggle — top right, no box */}
         {(phase === "ready" || phase === "form") && (
           <button
             onClick={() => setThemeOverride(prev => {
@@ -1021,6 +979,7 @@ button.retry:hover { background: var(--accent-faint); }
           </button>
         )}
 
+        {/* Normal view */}
         <div className="shell">
 
           {phase === "loading" && (
@@ -1119,8 +1078,6 @@ button.retry:hover { background: var(--accent-faint); }
     const root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(<App />);
   </script>
-
   <script data-goatcounter="https://salaah.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-
 </body>
 </html>
