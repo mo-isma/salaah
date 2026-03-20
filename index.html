@@ -17,7 +17,6 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg: #f5f0e8;
       --fg: #1a1a1a;
@@ -27,7 +26,6 @@
       --muted: #888;
       --accent-faint: rgba(94,132,96,0.08);
     }
-
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #262624;
@@ -39,7 +37,6 @@
         --accent-faint: rgba(140,196,142,0.1);
       }
     }
-
     [data-theme="dark"] {
       --bg: #262624;
       --fg: #f0ece4;
@@ -50,7 +47,6 @@
       --accent-faint: rgba(140,196,142,0.1);
       color-scheme: dark;
     }
-
     [data-theme="light"] {
       --bg: #f5f0e8;
       --fg: #1a1a1a;
@@ -61,14 +57,11 @@
       --accent-faint: rgba(94,132,96,0.08);
       color-scheme: light;
     }
-
     [data-theme="dark"] body, [data-theme="light"] body {
       background: var(--bg);
       color: var(--fg);
     }
-
     html, body { height: 100%; }
-
     body {
       background: var(--bg);
       color: var(--fg);
@@ -79,9 +72,7 @@
       justify-content: center;
       padding: 1.5rem;
     }
-
     #root { width: 100%; display: flex; justify-content: center; }
-
     .shell {
       width: 100%;
       max-width: 600px;
@@ -91,14 +82,12 @@
       justify-content: center;
       padding-bottom: 5rem;
     }
-
     .rule {
       width: 100%;
       height: 1px;
       background: var(--border);
       margin: 2rem 0;
     }
-
     .label {
       font-size: 0.7rem;
       letter-spacing: 0.2em;
@@ -106,7 +95,6 @@
       color: var(--muted);
       margin-bottom: 0.5rem;
     }
-
     .prayer-name {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(3.5rem, 14vw, 7rem);
@@ -114,7 +102,6 @@
       letter-spacing: 0.04em;
       color: var(--fg);
     }
-
     .prayer-time {
       font-size: clamp(1.8rem, 6vw, 3rem);
       color: var(--accent);
@@ -122,7 +109,6 @@
       margin-top: 0.5rem;
       letter-spacing: 0.05em;
     }
-
     .countdown {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(1.8rem, 6vw, 3rem);
@@ -131,7 +117,6 @@
       color: var(--accent);
       margin-top: 1rem;
     }
-
     .location-line {
       font-size: 0.85rem;
       letter-spacing: 0.05em;
@@ -141,13 +126,11 @@
       flex-direction: column;
       gap: 0.5rem;
     }
-
     .location-controls {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
-
     .change-btn {
       background: transparent;
       border: none;
@@ -166,9 +149,7 @@
       opacity: 0.6;
       transition: opacity 0.15s;
     }
-
     .change-btn:hover { opacity: 1; }
-
     .time-toggle {
       display: flex;
       align-items: center;
@@ -179,9 +160,7 @@
       min-height: 44px;
       padding: 0.5rem 0;
     }
-
     .time-toggle:hover { opacity: 0.85; }
-
     .toggle-track {
       width: 28px;
       height: 14px;
@@ -191,7 +170,6 @@
       background: transparent;
       transition: background 0.2s;
     }
-
     .toggle-thumb {
       width: 8px;
       height: 8px;
@@ -201,11 +179,7 @@
       left: 2px;
       transition: transform 0.2s;
     }
-
-    .toggle-thumb.right {
-      transform: translateX(14px);
-    }
-
+    .toggle-thumb.right { transform: translateX(14px); }
     .toggle-label {
       font-family: "Courier Prime", monospace;
       font-size: 0.65rem;
@@ -216,7 +190,6 @@
       width: 2.8rem;
       text-align: left;
     }
-
     .loading-msg {
       font-size: 1rem;
       letter-spacing: 0.08em;
@@ -224,16 +197,13 @@
       color: var(--muted);
       animation: blink 1.2s step-end infinite;
     }
-
     @keyframes blink { 50% { opacity: 0; } }
-
     .form-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(2rem, 8vw, 3.5rem);
       letter-spacing: 0.04em;
       line-height: 1;
     }
-
     .form-subtitle {
       font-size: 0.8rem;
       letter-spacing: 0.12em;
@@ -241,7 +211,6 @@
       color: var(--muted);
       margin-top: 0.5rem;
     }
-
     .city-input {
       width: 100%;
       background: transparent;
@@ -254,11 +223,8 @@
       outline: none;
       letter-spacing: 0.02em;
     }
-
     .city-input::placeholder { color: var(--muted); }
-
     .city-input:focus { caret-color: var(--accent); }
-
     .suggestions {
       position: absolute;
       top: 100%;
@@ -273,7 +239,6 @@
       max-height: min(280px, 40vh);
       overflow-y: auto;
     }
-
     .suggestion-item {
       padding: 0.7rem 1rem;
       font-family: 'Courier Prime', monospace;
@@ -282,22 +247,15 @@
       cursor: pointer;
       border-bottom: 1px solid var(--border-faint);
     }
-
     .suggestion-item:last-child { border-bottom: none; }
     .suggestion-item:hover { background: var(--accent-faint); }
-
-    .suggestion-city {
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-
+    .suggestion-city { font-weight: 700; letter-spacing: 0.02em; }
     .suggestion-meta {
       font-size: 0.78rem;
       color: var(--muted);
       letter-spacing: 0.04em;
       margin-top: 0.15rem;
     }
-
     .searching-hint {
       font-size: 0.72rem;
       color: var(--muted);
@@ -306,14 +264,12 @@
       margin-top: 0.6rem;
       animation: blink 1.2s step-end infinite;
     }
-
     .error-msg {
       font-size: 0.9rem;
       color: var(--accent);
       letter-spacing: 0.04em;
       line-height: 1.6;
     }
-
     button.retry {
       margin-top: 1.5rem;
       background: transparent;
@@ -326,16 +282,13 @@
       padding: 0.6rem 1.2rem;
       cursor: pointer;
     }
-
     button.retry:hover { background: var(--accent-faint); }
-
     .all-prayers {
       margin-top: 0;
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
     }
-
     .prayer-row {
       display: flex;
       justify-content: space-between;
@@ -347,29 +300,11 @@
       color: var(--muted);
       opacity: 0.6;
     }
-
-    .prayer-row.active {
-      font-weight: 700;
-      color: var(--accent);
-      opacity: 1;
-    }
-
-    .prayer-row-name {
-      font-weight: 400;
-    }
-
-    .prayer-row.active .prayer-row-name {
-      font-weight: 700;
-    }
-
-    .prayer-row-time {
-      font-weight: 400;
-    }
-
-    .prayer-row.active .prayer-row-time {
-      font-weight: 700;
-    }
-
+    .prayer-row.active { font-weight: 700; color: var(--accent); opacity: 1; }
+    .prayer-row-name { font-weight: 400; }
+    .prayer-row.active .prayer-row-name { font-weight: 700; }
+    .prayer-row-time { font-weight: 400; }
+    .prayer-row.active .prayer-row-time { font-weight: 700; }
     .method-note {
       position: fixed;
       bottom: 0;
@@ -391,7 +326,6 @@
       transform: translateZ(0);
       background: var(--bg);
     }
-
     @media (orientation: landscape) {
       .method-note {
         font-size: 0.5rem;
@@ -400,7 +334,6 @@
         padding-bottom: calc(0.3rem + env(safe-area-inset-bottom));
       }
     }
-
     /* ─── Last Third Mode ───────────────────────────────────────────────────── */
     .last-third-screen {
       width: 100%;
@@ -409,10 +342,9 @@
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding: 2rem 1.5rem 5rem;
+      justify-content: flex-start;
+      padding: clamp(3rem, 12vmin, 6rem) 1.5rem 5rem;
     }
-
     .last-third-city {
       font-size: 0.7rem;
       letter-spacing: 0.2em;
@@ -420,7 +352,6 @@
       color: var(--muted);
       margin-bottom: 2rem;
     }
-
     .last-third-status {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(2.5rem, 10vw, 5rem);
@@ -428,7 +359,6 @@
       letter-spacing: 0.04em;
       margin-bottom: 1rem;
     }
-
     .last-third-countdown {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(1.8rem, 6vw, 3rem);
@@ -436,7 +366,6 @@
       line-height: 1;
       margin-top: 0.5rem;
     }
-
     .last-third-label {
       font-size: 0.7rem;
       letter-spacing: 0.2em;
@@ -445,7 +374,6 @@
       margin-bottom: 0.4rem;
       margin-top: 1.5rem;
     }
-
     .last-third-footer {
       position: fixed;
       bottom: 0;
@@ -463,7 +391,6 @@
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
     }
-
     .last-third-footer a, .last-third-footer button {
       background: transparent;
       border: none;
@@ -481,17 +408,13 @@
       display: inline-flex;
       align-items: center;
     }
-
     .last-third-footer a:hover, .last-third-footer button:hover { opacity: 0.8; }
-
   </style>
 </head>
 <body>
   <div id="root"></div>
-
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
-
     const PRAYER_KEYS = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
     function secondsToHMS(secs) {
@@ -525,16 +448,16 @@
     }
 
     const METHOD_INFO = {
-      1:  { id: 1,  name: "Muslim World League",                       fajr: "18°",   isha: "17°"     },
-      2:  { id: 2,  name: "Islamic Society of North America (ISNA)",   fajr: "15°",   isha: "15°"     },
-      3:  { id: 3,  name: "Egyptian General Authority of Survey",       fajr: "19.5°", isha: "17.5°"   },
-      4:  { id: 4,  name: "Umm al-Qura, Makkah",                       fajr: "18.5°", isha: "90 min"  },
-      5:  { id: 5,  name: "University of Islamic Sciences, Karachi",   fajr: "18°",   isha: "18°"     },
-      7:  { id: 7,  name: "Institute of Geophysics, Tehran",           fajr: "17.7°", isha: "14°"     },
-      11: { id: 11, name: "Majlis Ugama Islam Singapura",              fajr: "20°",   isha: "18°"     },
-      13: { id: 13, name: "Diyanet İşleri Başkanlığı, Turkey",         fajr: "18°",   isha: "17°"     },
-      14: { id: 14, name: "Spiritual Administration of Muslims, Russia", fajr: "16°", isha: "15°"     },
-      15: { id: 15, name: "Moonsighting Committee",                     fajr: "18°",   isha: "18°"     },
+      1:  { id: 1,  name: "Muslim World League",                         fajr: "18°",   isha: "17°"    },
+      2:  { id: 2,  name: "Islamic Society of North America (ISNA)",     fajr: "15°",   isha: "15°"    },
+      3:  { id: 3,  name: "Egyptian General Authority of Survey",         fajr: "19.5°", isha: "17.5°"  },
+      4:  { id: 4,  name: "Umm al-Qura, Makkah",                         fajr: "18.5°", isha: "90 min" },
+      5:  { id: 5,  name: "University of Islamic Sciences, Karachi",     fajr: "18°",   isha: "18°"    },
+      7:  { id: 7,  name: "Institute of Geophysics, Tehran",             fajr: "17.7°", isha: "14°"    },
+      11: { id: 11, name: "Majlis Ugama Islam Singapura",                fajr: "20°",   isha: "18°"    },
+      13: { id: 13, name: "Diyanet İşleri Başkanlığı, Turkey",           fajr: "18°",   isha: "17°"    },
+      14: { id: 14, name: "Spiritual Administration of Muslims, Russia", fajr: "16°",   isha: "15°"    },
+      15: { id: 15, name: "Moonsighting Committee",                       fajr: "18°",   isha: "18°"    },
     };
 
     function getMethodForCountry(country) {
@@ -576,6 +499,20 @@
       return { times: clean, timezone: timezone, method };
     }
 
+    // ─── Somaliland city list ────────────────────────────────────────────────
+    // All cities whose country is "Somalia" or "Somaliland" default to "Somalia".
+    // Only these named cities display as "Somaliland".
+    const SOMALILAND_CITIES = new Set([
+      "borama", "zeila", "lughaya", "baki", "berbera", "sheikh", "bulhar", "karin",
+      "el-darad", "el darad", "mandera", "laba-yo", "laba yo",
+      "hargeisa", "gabiley", "baligubadle", "madheera", "wajaale", "arabsiyo",
+      "kalabaydh", "salahlay", "burao", "burco", "odweyne",
+      "el afweyn", "el-afweyn", "ceel afweyn", "el afweyne",
+      "haji salah", "yirowe", "fiqiayuub", "garadag", "xiis",
+      "qorilugud", "qoryale", "widhwidh", "balidhiig",
+      "erigavo", "ceerigaabo", "laasqoray", "lasqoray", "maduna",
+    ]);
+
     async function searchPlaces(query) {
       const q = encodeURIComponent(query);
       const res = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${q}&count=8&language=en&format=json`, 8000);
@@ -592,22 +529,10 @@
             country = "Palestinian Territories";
           }
         }
-        if (country.toLowerCase().includes("somalia")) {
-          const lat = r.latitude, lon = r.longitude;
-          const somaliaCities = [
-            "las anod", "laascaanood", "lasanod",          // Las Anod variants
-            "taleh", "taleex",                              // Taleh variants
-            "xudun", "hudun",                               // Xudun variants
-            "kalabaydh",                                    // Kalabaydh
-            "adhi addeye", "adhicadeeye", "adhi cadeeye",  // Adhi Addeye variants
-            "yagoori", "yagori",                            // Yagoori variants
-            "bohol",                                        // Bohol
-            "buuhoodle", "buhodle"                          // Buuhoodle variants
-          ];
+        // Somalia / Somaliland: default to "Somalia", override only for the named list.
+        if (country.toLowerCase().includes("somalia") || country.toLowerCase() === "somaliland") {
           const cityLower = r.name ? r.name.toLowerCase() : "";
-          if (lat >= 8 && lat <= 11.5 && lon >= 42.5 && lon <= 49.5 && !somaliaCities.includes(cityLower)) {
-            country = "Somaliland";
-          }
+          country = SOMALILAND_CITIES.has(cityLower) ? "Somaliland" : "Somalia";
         }
         return {
           name: r.name,
@@ -627,7 +552,6 @@
       const [open, setOpen] = useState(false);
       const debounceRef = useRef(null);
       const wrapRef = useRef(null);
-
       useEffect(() => {
         function handleClick(e) {
           if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
@@ -635,7 +559,6 @@
         document.addEventListener("mousedown", handleClick);
         return () => document.removeEventListener("mousedown", handleClick);
       }, []);
-
       function handleChange(e) {
         const val = e.target.value;
         setQuery(val);
@@ -655,7 +578,6 @@
           }
         }, 320);
       }
-
       function handleSelect(place) {
         const label = [place.name, place.admin, place.country].filter(Boolean).join(", ");
         setQuery(label);
@@ -663,7 +585,6 @@
         setResults([]);
         onSelect(place);
       }
-
       return (
         <div ref={wrapRef} style={{ position: "relative", width: "100%" }}>
           <input
@@ -698,6 +619,34 @@
       );
     }
 
+    // ─── Last third calculation ──────────────────────────────────────────────
+    // Takes the exact Maghrib and Fajr strings for the relevant night.
+    function getLastThirdData(maghribStr, fajrStr, timezone) {
+      const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const nowParts = new Date().toLocaleTimeString("en-GB", {
+        timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+      }).split(":").map(Number);
+      const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
+      const [mh, mm] = maghribStr.split(":").map(Number);
+      const [fh, fm] = fajrStr.split(":").map(Number);
+      const maghribSecs = mh * 3600 + mm * 60;
+      const fajrSecs = (fh * 3600 + fm * 60) + 86400;
+      const nightDuration = fajrSecs - maghribSecs;
+      const lastThirdStart = maghribSecs + Math.floor((2 / 3) * nightDuration);
+      let timelineNow = nowSecs;
+      if (timelineNow < maghribSecs) timelineNow += 86400;
+      const inLastThird = timelineNow >= lastThirdStart && timelineNow < fajrSecs;
+      let secsUntil;
+      if (inLastThird) {
+        secsUntil = fajrSecs - timelineNow;
+      } else if (timelineNow < lastThirdStart) {
+        secsUntil = lastThirdStart - timelineNow;
+      } else {
+        secsUntil = (lastThirdStart + 86400) - timelineNow;
+      }
+      return { inLastThird, secsUntil };
+    }
+
     function App() {
       const [phase, setPhase] = useState("form");
       const [location, setLocation] = useState(null);
@@ -707,11 +656,11 @@
       const [errorMsg, setErrorMsg] = useState("");
       const [use24h, setUse24h] = useState(true);
       const [school, setSchool] = useState(0);
-      const [themeOverride, setThemeOverride] = useState(null); // null = system, 'dark', 'light'
+      const [themeOverride, setThemeOverride] = useState(null);
       const [lastThirdMode, setLastThirdMode] = useState(false);
-      const [lastThirdData, setLastThirdData] = useState(null); // { inLastThird, secsUntil, message }
+      const [lastThirdData, setLastThirdData] = useState(null);
+      const [adjTimes, setAdjTimes] = useState(null);
 
-      // Apply theme override via data attribute — avoids overriding CSS variables
       useEffect(() => {
         if (themeOverride === 'dark') {
           document.documentElement.setAttribute('data-theme', 'dark');
@@ -733,9 +682,6 @@
         try {
           const result = await fetchPrayerTimes(lat, lon, timezone, country, school, dayOffset);
           const resolvedTz = result.timezone || timezone;
-
-          // If no dayOffset yet, check if Isha has passed — if so re-fetch tomorrow
-          // Only do this if it's still the same calendar day (i.e. before midnight in the city's tz)
           if (!dayOffset) {
             const tz = resolvedTz || Intl.DateTimeFormat().resolvedOptions().timeZone;
             const nowParts = new Date().toLocaleTimeString("en-GB", {
@@ -746,13 +692,11 @@
             const ishaSecs = ih * 3600 + im * 60;
             const [fh, fm] = result.times["Fajr"].split(":").map(Number);
             const fajrSecs = fh * 3600 + fm * 60;
-            // Isha passed and we haven't crossed midnight yet (Fajr is still ahead in the future, not behind)
             if (nowSecs > ishaSecs && nowSecs > fajrSecs) {
               loadPrayers(lat, lon, city, region, country, timezone, 1);
               return;
             }
           }
-
           setPrayerTimes(result.times);
           setLocation({ city, region, country, timezone: resolvedTz, method: result.method, _lat: lat, _lon: lon });
           setNextPrayer(getNextPrayer(result.times, resolvedTz));
@@ -780,7 +724,6 @@
         const region = location.region;
         const country = location.country;
         let lastDay = new Date().toLocaleDateString("en-CA", { timeZone: tz });
-
         const tick = () => {
           const currentDay = new Date().toLocaleDateString("en-CA", { timeZone: tz });
           if (currentDay !== lastDay) {
@@ -809,50 +752,28 @@
         window.scrollTo(0, 0);
       }
 
-      function getLastThirdData(prayerTimes, timezone) {
-        if (!prayerTimes || !timezone) return null;
-        const tz = timezone;
+      // Before Fajr → fetch yesterday (offset -1), use yesterday's Maghrib + today's Fajr
+      // After Fajr  → fetch tomorrow (offset +1), use today's Maghrib + tomorrow's Fajr
+      useEffect(() => {
+        if (!lastThirdMode || !prayerTimes || !location) {
+          setAdjTimes(null);
+          return;
+        }
+        let cancelled = false;
+        const tz = location.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
         const nowParts = new Date().toLocaleTimeString("en-GB", {
           timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
         }).split(":").map(Number);
         const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
-
-        const [mh, mm] = prayerTimes["Maghrib"].split(":").map(Number);
         const [fh, fm] = prayerTimes["Fajr"].split(":").map(Number);
-        const maghribSecs = mh * 3600 + mm * 60;
-        // Fajr is always next day relative to Maghrib
-        const fajrSecs = (fh * 3600 + fm * 60) + 86400;
-        const nightDuration = fajrSecs - maghribSecs;
-        const lastThirdStart = maghribSecs + Math.floor((2 / 3) * nightDuration);
+        const fajrSecs = fh * 3600 + fm * 60;
+        const offset = nowSecs < fajrSecs ? -1 : 1;
+        fetchPrayerTimes(location._lat, location._lon, location.timezone, location.country, school, offset)
+          .then(result => { if (!cancelled) setAdjTimes({ times: result.times, offset }); })
+          .catch(() => { if (!cancelled) setAdjTimes(null); });
+        return () => { cancelled = true; };
+      }, [lastThirdMode, prayerTimes, location]);
 
-        // Place nowSecs on the same timeline as Maghrib→Fajr (both anchored to today's Maghrib)
-        // After Maghrib: nowSecs is already in range maghribSecs..86400, use as-is
-        // Before Maghrib (daytime): nowSecs is 0..maghribSecs, shift forward by 86400
-        //   so it sits after Fajr on the same timeline
-        let timelineNow = nowSecs;
-        if (timelineNow < maghribSecs) timelineNow += 86400;
-
-        // Now timelineNow is in range maghribSecs..(maghribSecs + 86400)
-        const inLastThird = timelineNow >= lastThirdStart && timelineNow < fajrSecs;
-
-        let secsUntil;
-        if (inLastThird) {
-          // Time until Fajr
-          secsUntil = fajrSecs - timelineNow;
-        } else if (timelineNow < lastThirdStart) {
-          // Before last third starts tonight
-          secsUntil = lastThirdStart - timelineNow;
-        } else {
-          // Past Fajr (daytime) — count to tonight's last third
-          // timelineNow is in range fajrSecs..(maghribSecs+86400)
-          // Tonight's lastThirdStart is lastThirdStart + 86400 relative to timelineNow's frame
-          secsUntil = (lastThirdStart + 86400) - timelineNow;
-        }
-
-        return { inLastThird, secsUntil };
-      }
-
-      // Set body background to match last third screen colour
       useEffect(() => {
         if (lastThirdMode && lastThirdData) {
           document.body.style.background = lastThirdData.inLastThird
@@ -863,17 +784,24 @@
         }
       }, [lastThirdMode, lastThirdData, themeOverride]);
 
-      // Last third tick
       useEffect(() => {
-        if (!lastThirdMode || !prayerTimes || !location) return;
+        if (!lastThirdMode || !prayerTimes || !location || !adjTimes) return;
         const tick = () => {
-          const data = getLastThirdData(prayerTimes, location.timezone);
-          setLastThirdData(data);
+          const tz = location.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const nowParts = new Date().toLocaleTimeString("en-GB", {
+            timeZone: tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+          }).split(":").map(Number);
+          const nowSecs = nowParts[0] * 3600 + nowParts[1] * 60 + nowParts[2];
+          const [fh, fm] = prayerTimes["Fajr"].split(":").map(Number);
+          const fajrSecs = fh * 3600 + fm * 60;
+          const maghribStr = nowSecs < fajrSecs ? adjTimes.times["Maghrib"] : prayerTimes["Maghrib"];
+          const fajrStr    = nowSecs < fajrSecs ? prayerTimes["Fajr"]       : adjTimes.times["Fajr"];
+          setLastThirdData(getLastThirdData(maghribStr, fajrStr, tz));
         };
         tick();
         const id = setInterval(tick, 1000);
         return () => clearInterval(id);
-      }, [lastThirdMode, prayerTimes, location]);
+      }, [lastThirdMode, prayerTimes, location, adjTimes]);
 
       const formatTime = (prayer) => {
         if (!prayer) return "";
@@ -889,8 +817,6 @@
 
       return (
         <>
-
-        {/* Last Third Screen */}
         {lastThirdMode && phase === "ready" && prayerTimes && location && (
           <div
             className={"last-third-screen " + (lastThirdData && lastThirdData.inLastThird ? "in-third" : "not-in")}
@@ -904,18 +830,18 @@
               zIndex: 100,
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
-              padding: "2rem 1.5rem 5rem",
+              justifyContent: "flex-start",
+              padding: "clamp(3rem, 12vmin, 6rem) 1.5rem 5rem",
               width: "100%",
               maxWidth: "100%",
               overflowY: "auto",
             }}
           >
             <p className="last-third-city">{location.city}{location.country ? ` — ${location.country}` : ""}</p>
-
             <div className="rule" style={{ marginBottom: "2rem", marginTop: 0, background: lastThirdData && lastThirdData.inLastThird ? "rgba(94,158,94,0.3)" : "rgba(196,94,94,0.3)" }} />
-
-            {lastThirdData && lastThirdData.inLastThird ? (
+            {!adjTimes ? (
+              <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.85rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#8cc48e" : "#3d7a3d", opacity: 0.6, animation: "blink 1.2s step-end infinite" }}>Calculating_</p>
+            ) : lastThirdData && lastThirdData.inLastThird ? (
               <>
                 <div className="last-third-status" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }}>
                   It is the last third<br />of the night
@@ -944,22 +870,18 @@
                 {lastThirdData && (() => {
                   const tz = location.timezone;
                   const now = new Date();
-                  const nowSecs = lastThirdData.secsUntil;
-                  const target = new Date(now.getTime() + nowSecs * 1000);
+                  const target = new Date(now.getTime() + lastThirdData.secsUntil * 1000);
                   const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
                   return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#c48e8e" : "#b04040", opacity: 0.6, marginTop: "0.5rem" }}>begins at {timeStr}</p>;
                 })()}
               </>
             )}
-
             <div className="last-third-footer">
               <a href="https://sunnah.com/bukhari:7494" target="_blank" rel="noopener noreferrer" style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>hadith</a>
               <button onClick={() => setLastThirdMode(false)} style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>back</button>
             </div>
           </div>
         )}
-
-        {/* Theme toggle — top right, no box */}
         {(phase === "ready" || phase === "form") && (
           <button
             onClick={() => setThemeOverride(prev => {
@@ -978,14 +900,10 @@
             )}
           </button>
         )}
-
-        {/* Normal view */}
         <div className="shell">
-
           {phase === "loading" && (
             <p className="loading-msg">Fetching prayer times_</p>
           )}
-
           {phase === "form" && (
             <div>
               <div className="form-title">Where are you?</div>
@@ -993,20 +911,15 @@
               <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
             </div>
           )}
-
           {phase === "ready" && nextPrayer && (
             <div>
               <p className="label">Next prayer</p>
               <div className="prayer-name">{nextPrayer.name}</div>
               <div className="prayer-time">{formatTime(nextPrayer)}</div>
-
               <div className="rule" />
-
               <p className="label">Time remaining</p>
               <div className="countdown">{countdown}</div>
-
               <div className="rule" style={{ margin: "1.5rem 0" }} />
-
               {prayerTimes && (
                 <div className="all-prayers">
                   {["Fajr","Dhuhr","Asr","Maghrib","Isha"].map(name => (
@@ -1017,16 +930,14 @@
                   ))}
                 </div>
               )}
-
               <div className="rule" />
-
               {location && (
                 <p className="location-line">
                   <span>
                     {location.city}
                     {location.region && location.region !== location.city ? `, ${location.region}` : ""}
                     {location.country ? ` — ${location.country}` : ""}
-                    {location.city && location.city.toLowerCase() === "garadag" && location.country && location.country.toLowerCase().includes("somalia") ? " (BIG UP!)" : ""}
+                    {location.city && location.city.toLowerCase() === "garadag" && location.country && location.country.toLowerCase() === "somaliland" ? " (BIG UP!)" : ""}
                     {location.city && location.city.toLowerCase() === "hobyo" ? " (best beach town on earth!)" : ""}
                   </span>
                   <div className="location-controls">
@@ -1047,7 +958,6 @@
               )}
             </div>
           )}
-
           {phase === "error" && (
             <div>
               <p className="error-msg">{errorMsg}</p>
@@ -1056,9 +966,7 @@
               </button>
             </div>
           )}
-
         </div>
-
         {location && location.method && METHOD_INFO[location.method] && (
           <p className="method-note">
             {METHOD_INFO[location.method].name} · Fajr {METHOD_INFO[location.method].fajr} · Isha {METHOD_INFO[location.method].isha}
