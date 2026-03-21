@@ -404,7 +404,7 @@
       z-index: 300;
       pointer-events: none;
       white-space: nowrap;
-      animation: toastAnim 2.8s ease forwards;
+      opacity: 0;
     }
     @keyframes toastAnim {
       0%   { opacity: 0; transform: translateX(-50%) translateY(4px); }
@@ -932,6 +932,7 @@
       const [toastMsg, setToastMsg] = useState("");
       const [srWelcome, setSrWelcome] = useState(false);
       const toastTimerRef = useRef(null);
+      const toastRef = useRef(null);
 
       // ─── Theme effect ──────────────────────────────────────────────────────
       useEffect(() => {
@@ -1068,12 +1069,24 @@
         }
       }, [location]);
 
+      // ─── Toast animation via DOM ref ──────────────────────────────────────
+      useEffect(() => {
+        if (!toastRef.current) return;
+        const el = toastRef.current;
+        el.style.animation = 'none';
+        void el.offsetWidth; // force reflow to restart animation
+        el.style.animation = 'toastAnim 2.8s ease forwards';
+      }, [toastKey]);
+
       // ─── Toast helper ──────────────────────────────────────────────────────
       function fireToast(msg) {
         if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
         setToastMsg(msg);
         setToastKey(k => k + 1);
-        toastTimerRef.current = setTimeout(() => setToastMsg(""), 2800);
+        toastTimerRef.current = setTimeout(() => {
+          setToastMsg("");
+          if (toastRef.current) toastRef.current.style.animation = 'none';
+        }, 3000);
       }
 
       // ─── Bookmark toggle ───────────────────────────────────────────────────
@@ -1175,14 +1188,14 @@
 
       // ─── Padlock SVG ───────────────────────────────────────────────────────
       const PadlockIcon = ({ locked }) => locked ? (
-        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
+        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
           <rect x="3" y="11" width="18" height="11"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       ) : (
-        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
+        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
           <rect x="3" y="11" width="18" height="11"/>
-          <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+          <path d="M7 11V7a5 5 0 0 1 10-4"/>
         </svg>
       );
 
@@ -1197,11 +1210,16 @@
           )}
 
           {/* Toast */}
-          {toastMsg && (
-            <div key={toastKey} className="toast" role="status" aria-live="polite" aria-atomic="true">
-              {toastMsg}
-            </div>
-          )}
+          <div
+            ref={toastRef}
+            className="toast"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            aria-hidden={!toastMsg}
+          >
+            {toastMsg}
+          </div>
 
           {/* Last Third Screen */}
           {lastThirdMode && phase === "ready" && prayerTimes && location && (
