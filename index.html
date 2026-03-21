@@ -581,7 +581,6 @@
     const { useState, useEffect, useRef } = React;
     const PRAYER_KEYS = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
-    // ─── Device / context detection (stable, computed once) ────────────────
     const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
                       (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024);
     const IS_STANDALONE = window.matchMedia('(display-mode: standalone)').matches ||
@@ -671,7 +670,6 @@
       return { times: clean, timezone: timezone, method };
     }
 
-    // ─── Somaliland city list ────────────────────────────────────────────────
     const SOMALILAND_CITIES = new Set([
       "borama", "zeila", "lughaya", "baki", "berbera", "sheikh", "bulhar", "karin",
       "el-darad", "el darad", "mandera", "laba-yo", "laba yo",
@@ -714,7 +712,6 @@
       });
     }
 
-    // ─── Reverse geocode GPS coords → place object ──────────────────────────
     async function reverseGeocode(lat, lon) {
       const res = await fetchWithTimeout(
         `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`,
@@ -732,13 +729,12 @@
       return { name: city, admin: region, country, lat, lon, timezone };
     }
 
-    // ─── CitySearch component ────────────────────────────────────────────────
     function CitySearch({ onSelect }) {
       const [query, setQuery] = useState("");
       const [results, setResults] = useState([]);
       const [searching, setSearching] = useState(false);
       const [open, setOpen] = useState(false);
-      const [gpsState, setGpsState] = useState(null); // null | "loading" | "denied" | "error"
+      const [gpsState, setGpsState] = useState(null);
       const debounceRef = useRef(null);
       const wrapRef = useRef(null);
 
@@ -810,9 +806,7 @@
               setGpsState("error");
             }
           },
-          (err) => {
-            setGpsState(err.code === 1 ? "denied" : "error");
-          },
+          (err) => { setGpsState(err.code === 1 ? "denied" : "error"); },
           { timeout: 10000, maximumAge: 60000 }
         );
       }
@@ -831,12 +825,7 @@
               autoFocus
               aria-label="Search for a city or town"
             />
-            <button
-              className="gps-btn"
-              onClick={handleGPS}
-              aria-label="Detect my location"
-              disabled={gpsState === "loading"}
-            >
+            <button className="gps-btn" onClick={handleGPS} aria-label="Detect my location" disabled={gpsState === "loading"}>
               {gpsState === "loading" ? (
                 <svg viewBox="0 0 24 24" width="16" height="16" style={{ fill: "var(--muted)", animation: "blink 1.2s step-end infinite" }}>
                   <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" fill="none" />
@@ -849,12 +838,8 @@
               )}
             </button>
           </div>
-          {gpsState === "denied" && (
-            <p className="gps-error">Enable location access in your browser settings to detect your city automatically</p>
-          )}
-          {gpsState === "error" && (
-            <p className="gps-error">Could not detect your location. Try searching manually.</p>
-          )}
+          {gpsState === "denied" && <p className="gps-error">Enable location access in your browser settings to detect your city automatically</p>}
+          {gpsState === "error" && <p className="gps-error">Could not detect your location. Try searching manually.</p>}
           {searching && <p className="searching-hint">Searching_</p>}
           {open && !searching && query.trim().length >= 2 && results.length === 0 && (
             <ul className="suggestions" role="listbox" aria-label="Search results">
@@ -866,15 +851,9 @@
           {open && results.length > 0 && (
             <ul className="suggestions" role="listbox" aria-label="Search results">
               {results.map((r, i) => (
-                <li
-                  key={i}
-                  className="suggestion-item"
-                  role="option"
-                  aria-selected="false"
-                  onMouseDown={() => handleSelect(r)}
-                  tabIndex={0}
-                  onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleSelect(r); } }}
-                >
+                <li key={i} className="suggestion-item" role="option" aria-selected="false"
+                  onMouseDown={() => handleSelect(r)} tabIndex={0}
+                  onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleSelect(r); } }}>
                   <div className="suggestion-city">{r.name}</div>
                   <div className="suggestion-meta">{[r.admin, r.country].filter(Boolean).join(", ")}</div>
                 </li>
@@ -885,7 +864,6 @@
       );
     }
 
-    // ─── Last third calculation ──────────────────────────────────────────────
     function getLastThirdData(maghribStr, fajrStr, timezone) {
       const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
       const nowParts = new Date().toLocaleTimeString("en-GB", {
@@ -912,7 +890,6 @@
       return { inLastThird, secsUntil };
     }
 
-    // ─── App ─────────────────────────────────────────────────────────────────
     function App() {
       const [phase, setPhase] = useState("form");
       const [location, setLocation] = useState(null);
@@ -926,7 +903,6 @@
       const [lastThirdMode, setLastThirdMode] = useState(false);
       const [lastThirdData, setLastThirdData] = useState(null);
       const [adjTimes, setAdjTimes] = useState(null);
-      // New state
       const [homeCitySaved, setHomeCitySaved] = useState(false);
       const [toastKey, setToastKey] = useState(0);
       const [toastMsg, setToastMsg] = useState("");
@@ -935,7 +911,6 @@
       const toastRef = useRef(null);
       const toastMounted = useRef(false);
 
-      // ─── Theme effect ──────────────────────────────────────────────────────
       useEffect(() => {
         if (themeOverride === 'dark') {
           document.documentElement.setAttribute('data-theme', 'dark');
@@ -952,7 +927,6 @@
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       }
 
-      // ─── loadPrayers ───────────────────────────────────────────────────────
       async function loadPrayers(lat, lon, city, region, country, timezone, dayOffset) {
         setPhase("loading");
         try {
@@ -988,7 +962,6 @@
         }
       }
 
-      // ─── Apply ampm logic for a country ───────────────────────────────────
       function applyAmPm(country) {
         const ampmCountries = ["united states", "philippines", "australia", "new zealand", "canada"];
         const c = (country || "").toLowerCase();
@@ -996,13 +969,11 @@
         else setUse24h(true);
       }
 
-      // ─── Load from saved city object ───────────────────────────────────────
       function startFromSaved(saved) {
         applyAmPm(saved.country);
         loadPrayers(saved.lat, saved.lon, saved.name, saved.admin, saved.country, saved.timezone);
       }
 
-      // ─── On mount: SR welcome + restore saved city ─────────────────────────
       useEffect(() => {
         if (!localStorage.getItem('sr-welcomed')) {
           localStorage.setItem('sr-welcomed', '1');
@@ -1019,29 +990,20 @@
         }
       }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-      // ─── Re-load when school changes ───────────────────────────────────────
       useEffect(() => {
         if (!location) return;
         loadPrayers(location._lat, location._lon, location.city, location.region, location.country, location.timezone);
       }, [school]); // eslint-disable-line react-hooks/exhaustive-deps
 
-      // ─── Countdown tick ────────────────────────────────────────────────────
       useEffect(() => {
         if (phase !== "ready" || !prayerTimes || !location) return;
         const tz = location.timezone;
-        const lat = location._lat;
-        const lon = location._lon;
-        const city = location.city;
-        const region = location.region;
-        const country = location.country;
+        const lat = location._lat, lon = location._lon;
+        const city = location.city, region = location.region, country = location.country;
         let lastDay = new Date().toLocaleDateString("en-CA", { timeZone: tz });
         const tick = () => {
           const currentDay = new Date().toLocaleDateString("en-CA", { timeZone: tz });
-          if (currentDay !== lastDay) {
-            lastDay = currentDay;
-            loadPrayers(lat, lon, city, region, country, tz);
-            return;
-          }
+          if (currentDay !== lastDay) { lastDay = currentDay; loadPrayers(lat, lon, city, region, country, tz); return; }
           const np = getNextPrayer(prayerTimes, tz);
           setNextPrayer(np);
           setCountdown(secondsToHMS(np.secsUntil));
@@ -1051,34 +1013,28 @@
         return () => clearInterval(id);
       }, [phase, prayerTimes, location]); // eslint-disable-line react-hooks/exhaustive-deps
 
-      // ─── Sync bookmark state when location changes ─────────────────────────
       useEffect(() => {
         if (!location) { setHomeCitySaved(false); return; }
         const savedRaw = localStorage.getItem('salaah-home-city');
         if (savedRaw) {
           try {
             const s = JSON.parse(savedRaw);
-            setHomeCitySaved(
-              Math.abs(s.lat - location._lat) < 0.01 &&
-              Math.abs(s.lon - location._lon) < 0.01
-            );
+            setHomeCitySaved(Math.abs(s.lat - location._lat) < 0.01 && Math.abs(s.lon - location._lon) < 0.01);
           } catch { setHomeCitySaved(false); }
         } else {
           setHomeCitySaved(false);
         }
       }, [location]);
 
-      // ─── Toast animation via DOM ref ──────────────────────────────────────
       useEffect(() => {
-        if (!toastMounted.current) { toastMounted.current = true; return; } // skip initial mount
+        if (!toastMounted.current) { toastMounted.current = true; return; }
         if (!toastRef.current) return;
         const el = toastRef.current;
         el.style.animation = 'none';
-        void el.offsetWidth; // force reflow to restart animation
+        void el.offsetWidth;
         el.style.animation = 'toastAnim 2.8s ease forwards';
       }, [toastKey]);
 
-      // ─── Toast helper ──────────────────────────────────────────────────────
       function fireToast(msg) {
         if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
         setToastMsg(msg);
@@ -1089,7 +1045,6 @@
         }, 3000);
       }
 
-      // ─── Bookmark toggle ───────────────────────────────────────────────────
       function toggleBookmark() {
         if (homeCitySaved) {
           localStorage.removeItem('salaah-home-city');
@@ -1097,12 +1052,8 @@
           fireToast("Home city removed");
         } else {
           const place = {
-            name: location.city,
-            admin: location.region,
-            country: location.country,
-            lat: location._lat,
-            lon: location._lon,
-            timezone: location.timezone,
+            name: location.city, admin: location.region, country: location.country,
+            lat: location._lat, lon: location._lon, timezone: location.timezone,
           };
           localStorage.setItem('salaah-home-city', JSON.stringify(place));
           setHomeCitySaved(true);
@@ -1116,14 +1067,12 @@
         }
       }
 
-      // ─── City select ───────────────────────────────────────────────────────
       async function handleCitySelect(place) {
         applyAmPm(place.country);
         await loadPrayers(place.lat, place.lon, place.name, place.admin, place.country, place.timezone);
         window.scrollTo(0, 0);
       }
 
-      // ─── Adjacent day for last third ───────────────────────────────────────
       useEffect(() => {
         if (!lastThirdMode || !prayerTimes || !location) { setAdjTimes(null); return; }
         let cancelled = false;
@@ -1141,7 +1090,6 @@
         return () => { cancelled = true; };
       }, [lastThirdMode, prayerTimes, location]); // eslint-disable-line react-hooks/exhaustive-deps
 
-      // ─── Last third background ─────────────────────────────────────────────
       useEffect(() => {
         if (lastThirdMode && lastThirdData) {
           document.body.style.background = lastThirdData.inLastThird
@@ -1152,7 +1100,6 @@
         }
       }, [lastThirdMode, lastThirdData, themeOverride]); // eslint-disable-line react-hooks/exhaustive-deps
 
-      // ─── Last third tick ───────────────────────────────────────────────────
       useEffect(() => {
         if (!lastThirdMode || !prayerTimes || !location || !adjTimes) return;
         const tick = () => {
@@ -1172,7 +1119,6 @@
         return () => clearInterval(id);
       }, [lastThirdMode, prayerTimes, location, adjTimes]);
 
-      // ─── Format time helper ────────────────────────────────────────────────
       const formatTime = (prayer) => {
         if (!prayer) return "";
         const [h, m] = prayer.timeStr.split(":").map(Number);
@@ -1185,20 +1131,18 @@
         }
       };
 
-      // ─── Padlock SVG ───────────────────────────────────────────────────────
       const PadlockIcon = ({ locked }) => locked ? (
         <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
           <rect x="3" y="11" width="18" height="11"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       ) : (
-        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
+        <svg viewBox="0 -2 24 26" width="1em" height="1em" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
           <rect x="3" y="11" width="18" height="11"/>
           <path d="M7 11V7a5 5 0 0 1 10-4"/>
         </svg>
       );
 
-      // ─── Render ────────────────────────────────────────────────────────────
       return (
         <>
           {srWelcome && (
@@ -1207,66 +1151,41 @@
             </div>
           )}
 
-          {/* Toast */}
-          <div
-            ref={toastRef}
-            className="toast"
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            aria-hidden={!toastMsg}
-          >
+          <div ref={toastRef} className="toast" role="status" aria-live="polite" aria-atomic="true" aria-hidden={!toastMsg}>
             {toastMsg}
           </div>
 
-          {/* Last Third Screen */}
           {lastThirdMode && phase === "ready" && prayerTimes && location && (
-            <div
-              className="last-third-screen"
-              style={{
-                background: lastThirdData && lastThirdData.inLastThird
-                  ? (isDarkMode() ? "#1a3d1a" : "#dff2df")
-                  : (isDarkMode() ? "#3d1a1a" : "#f2dfdf"),
-                position: "fixed",
-                top: 0, left: 0, right: 0, bottom: 0,
-                zIndex: 100,
-                overflowY: "auto",
-              }}
-            >
+            <div className="last-third-screen" style={{
+              background: lastThirdData && lastThirdData.inLastThird
+                ? (isDarkMode() ? "#1a3d1a" : "#dff2df")
+                : (isDarkMode() ? "#3d1a1a" : "#f2dfdf"),
+              position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 100, overflowY: "auto",
+            }}>
               <p className="last-third-city">{location.city}{location.country ? ` \u2014 ${location.country}` : ""}</p>
               <div className="rule" style={{ marginBottom: "2rem", marginTop: 0, background: lastThirdData && lastThirdData.inLastThird ? "rgba(94,158,94,0.3)" : "rgba(196,94,94,0.3)" }} />
               {!adjTimes ? (
                 <p role="status" style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.85rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#8cc48e" : "#3d7a3d", opacity: 0.6, animation: "blink 1.2s step-end infinite" }}>Calculating...</p>
               ) : lastThirdData && lastThirdData.inLastThird ? (
                 <div aria-live="polite" aria-atomic="true">
-                  <div className="last-third-status" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }}>
-                    It is the last third<br />of the night
-                  </div>
+                  <div className="last-third-status" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }}>It is the last third<br />of the night</div>
                   <p className="last-third-label">ends in</p>
-                  <div className="last-third-countdown" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }} aria-label={"Time remaining: " + secondsToHMS(lastThirdData.secsUntil)}>
-                    {secondsToHMS(lastThirdData.secsUntil)}
-                  </div>
+                  <div className="last-third-countdown" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }} aria-label={"Time remaining: " + secondsToHMS(lastThirdData.secsUntil)}>{secondsToHMS(lastThirdData.secsUntil)}</div>
                   {(() => {
                     const tz = location.timezone;
-                    const now = new Date();
-                    const target = new Date(now.getTime() + lastThirdData.secsUntil * 1000);
+                    const target = new Date(new Date().getTime() + lastThirdData.secsUntil * 1000);
                     const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
                     return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#8cc48e" : "#3d7a3d", opacity: 0.6, marginTop: "0.5rem" }}>ends at {timeStr}</p>;
                   })()}
                 </div>
               ) : (
                 <div aria-live="polite" aria-atomic="true">
-                  <div className="last-third-status" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }}>
-                    Not yet the last<br />third of the night
-                  </div>
+                  <div className="last-third-status" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }}>Not yet the last<br />third of the night</div>
                   <p className="last-third-label">begins in</p>
-                  <div className="last-third-countdown" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }} aria-label={"Time remaining: " + (lastThirdData ? secondsToHMS(lastThirdData.secsUntil) : "")}>
-                    {lastThirdData ? secondsToHMS(lastThirdData.secsUntil) : "\u2014"}
-                  </div>
+                  <div className="last-third-countdown" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }} aria-label={"Time remaining: " + (lastThirdData ? secondsToHMS(lastThirdData.secsUntil) : "")}>{lastThirdData ? secondsToHMS(lastThirdData.secsUntil) : "\u2014"}</div>
                   {lastThirdData && (() => {
                     const tz = location.timezone;
-                    const now = new Date();
-                    const target = new Date(now.getTime() + lastThirdData.secsUntil * 1000);
+                    const target = new Date(new Date().getTime() + lastThirdData.secsUntil * 1000);
                     const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
                     return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#c48e8e" : "#b04040", opacity: 0.6, marginTop: "0.5rem" }}>begins at {timeStr}</p>;
                   })()}
@@ -1274,11 +1193,7 @@
               )}
               <div className="last-third-footer">
                 <a href="https://sunnah.com/bukhari:7494" target="_blank" rel="noopener noreferrer" style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>hadith</a>
-                <button
-                  onClick={toggleBookmark}
-                  style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}
-                  aria-label={homeCitySaved ? "Remove saved home city" : "Save as home city"}
-                >
+                <button onClick={toggleBookmark} style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }} aria-label={homeCitySaved ? "Remove saved home city" : "Save as home city"}>
                   {homeCitySaved ? "unlock" : "lock city"}
                 </button>
                 <button onClick={() => setLastThirdMode(false)} style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>back</button>
@@ -1286,7 +1201,6 @@
             </div>
           )}
 
-          {/* Install screen */}
           {phase === "install" && (
             <div className="install-screen phase-fade">
               <div className="install-content">
@@ -1333,7 +1247,6 @@
             </div>
           )}
 
-          {/* Theme toggle */}
           {(phase === "ready" || phase === "form" || phase === "install") && (
             <button
               onClick={() => setThemeOverride(prev => {
@@ -1354,11 +1267,8 @@
             </button>
           )}
 
-          {/* Main shell */}
           <div className="shell" id="main-content">
-            {phase === "loading" && (
-              <p role="status" className="loading-msg phase-fade">Fetching prayer times_</p>
-            )}
+            {phase === "loading" && <p role="status" className="loading-msg phase-fade">Fetching prayer times_</p>}
 
             {phase === "form" && (
               <div className="phase-fade">
@@ -1376,10 +1286,7 @@
                   <div className="prayer-time">{formatTime(nextPrayer)}</div>
                   <div className="rule" />
                   <p className="label">Time remaining</p>
-                  <div
-                    className="countdown"
-                    aria-label={"Time remaining: " + countdown}
-                  >{countdown}</div>
+                  <div className="countdown" aria-label={"Time remaining: " + countdown}>{countdown}</div>
                 </div>
                 <div className="rule" style={{ margin: "1.5rem 0" }} />
                 {prayerTimes && (
@@ -1403,53 +1310,23 @@
                         {location.city && location.city.toLowerCase() === "garadag" && location.country && location.country.toLowerCase() === "somaliland" ? " (BIG UP!)" : ""}
                         {location.city && location.city.toLowerCase() === "hobyo" ? " (best beach town on earth!)" : ""}
                       </span>
-                      <button
-                        className="bookmark-btn"
-                        onClick={toggleBookmark}
-                        aria-label={homeCitySaved ? "Remove saved home city" : "Save as home city"}
-                      >
+                      <button className="bookmark-btn" onClick={toggleBookmark} aria-label={homeCitySaved ? "Remove saved home city" : "Save as home city"}>
                         <PadlockIcon locked={homeCitySaved} />
                       </button>
                     </span>
                     <div className="location-controls">
-                      <button
-                        className="change-btn"
-                        onClick={() => {
-                          setPhase("form");
-                          setPrayerTimes(null);
-                          setNextPrayer(null);
-                          setCountdown("");
-                          setLocation(null);
-                          document.title = "salaah.co";
-                        }}
-                      >
+                      <button className="change-btn" onClick={() => { setPhase("form"); setPrayerTimes(null); setNextPrayer(null); setCountdown(""); setLocation(null); document.title = "salaah.co"; }}>
                         change location
                       </button>
-                      <button
-                        className="change-btn"
-                        onClick={() => setLastThirdMode(true)}
-                        aria-label="View last third of the night"
-                      >
+                      <button className="change-btn" onClick={() => setLastThirdMode(true)} aria-label="View last third of the night">
                         last third
                       </button>
                       {IS_MOBILE && !IS_STANDALONE && (
-                        <button
-                          className="change-btn"
-                          onClick={() => setPhase("install")}
-                          aria-label="Add salaah to your home screen"
-                        >
+                        <button className="change-btn" onClick={() => setPhase("install")} aria-label="Add salaah to your home screen">
                           add to home screen
                         </button>
                       )}
-                      <div
-                        className="time-toggle"
-                        onClick={() => setUse24h(p => !p)}
-                        role="switch"
-                        aria-checked={use24h}
-                        aria-label="Time format"
-                        tabIndex={0}
-                        onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setUse24h(p => !p); } }}
-                      >
+                      <div className="time-toggle" onClick={() => setUse24h(p => !p)} role="switch" aria-checked={use24h} aria-label="Time format" tabIndex={0} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setUse24h(p => !p); } }}>
                         <div className="toggle-track">
                           <div className={"toggle-thumb" + (use24h ? "" : " right")} />
                         </div>
@@ -1464,9 +1341,7 @@
             {phase === "error" && (
               <div role="status" className="phase-fade">
                 <p className="error-msg">{errorMsg}</p>
-                <button className="retry" onClick={() => { setPhase("form"); setErrorMsg(""); document.title = "salaah.co"; }}>
-                  Try again
-                </button>
+                <button className="retry" onClick={() => { setPhase("form"); setErrorMsg(""); document.title = "salaah.co"; }}>Try again</button>
               </div>
             )}
           </div>
@@ -1475,10 +1350,7 @@
             <p className="method-note">
               {METHOD_INFO[location.method].name} · Fajr {METHOD_INFO[location.method].fajr} · Isha {METHOD_INFO[location.method].isha}
               {" · "}
-              <span
-                onClick={() => setSchool(s => s === 0 ? 1 : 0)}
-                style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}
-              >
+              <span onClick={() => setSchool(s => s === 0 ? 1 : 0)} style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}>
                 {school === 0 ? "Shafi\u2019i / Maliki / Hanbali" : "Hanafi"} Asr
               </span>
             </p>
