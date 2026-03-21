@@ -146,8 +146,8 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       cursor: pointer;
-      padding: 0.5rem 0;
-      min-height: 44px;
+      padding: 0.35rem 0;
+      min-height: auto;
       display: inline-flex;
       align-items: center;
       text-decoration: underline;
@@ -163,8 +163,8 @@
       opacity: 0.45;
       transition: opacity 0.15s;
       cursor: pointer;
-      min-height: 44px;
-      padding: 0.5rem 0;
+      min-height: auto;
+      padding: 0.35rem 0;
     }
     .time-toggle:hover { opacity: 0.85; }
     .toggle-track {
@@ -379,13 +379,13 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      padding: 0.25rem 0.1rem;
+      padding: 0 0.15rem;
       display: inline-flex;
       align-items: center;
       opacity: 0.5;
       transition: opacity 0.15s;
       vertical-align: middle;
-      min-height: 32px;
+      line-height: 1;
     }
     .bookmark-btn:hover { opacity: 1; }
     /* ─── Toast ────────────────────────────────────────────────────────────── */
@@ -404,12 +404,12 @@
       z-index: 300;
       pointer-events: none;
       white-space: nowrap;
-      animation: toastAnim 2s ease forwards;
+      animation: toastAnim 2.8s ease forwards;
     }
     @keyframes toastAnim {
       0%   { opacity: 0; transform: translateX(-50%) translateY(4px); }
-      15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
-      70%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+      10%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+      75%  { opacity: 1; transform: translateX(-50%) translateY(0); }
       100% { opacity: 0; transform: translateX(-50%) translateY(0); }
     }
     /* ─── Phase fade ───────────────────────────────────────────────────────── */
@@ -928,10 +928,10 @@
       const [adjTimes, setAdjTimes] = useState(null);
       // New state
       const [homeCitySaved, setHomeCitySaved] = useState(false);
-      const [showToast, setShowToast] = useState(false);
       const [toastKey, setToastKey] = useState(0);
       const [toastMsg, setToastMsg] = useState("");
       const [srWelcome, setSrWelcome] = useState(false);
+      const toastTimerRef = useRef(null);
 
       // ─── Theme effect ──────────────────────────────────────────────────────
       useEffect(() => {
@@ -1068,15 +1068,20 @@
         }
       }, [location]);
 
+      // ─── Toast helper ──────────────────────────────────────────────────────
+      function fireToast(msg) {
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+        setToastMsg(msg);
+        setToastKey(k => k + 1);
+        toastTimerRef.current = setTimeout(() => setToastMsg(""), 2800);
+      }
+
       // ─── Bookmark toggle ───────────────────────────────────────────────────
       function toggleBookmark() {
         if (homeCitySaved) {
           localStorage.removeItem('salaah-home-city');
           setHomeCitySaved(false);
-          setToastMsg("Home city removed");
-          setToastKey(k => k + 1);
-          setShowToast(true);
-          setTimeout(() => setShowToast(false), 2500);
+          fireToast("Home city removed");
         } else {
           const place = {
             name: location.city,
@@ -1088,10 +1093,7 @@
           };
           localStorage.setItem('salaah-home-city', JSON.stringify(place));
           setHomeCitySaved(true);
-          setToastMsg("City locked as home");
-          setToastKey(k => k + 1);
-          setShowToast(true);
-          setTimeout(() => setShowToast(false), 2500);
+          fireToast("City locked as home");
           // Ask service worker to cache monthly prayer data
           if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
             const today = new Date();
@@ -1173,13 +1175,13 @@
 
       // ─── Padlock SVG ───────────────────────────────────────────────────────
       const PadlockIcon = ({ locked }) => locked ? (
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
+          <rect x="3" y="11" width="18" height="11"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       ) : (
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
+          <rect x="3" y="11" width="18" height="11"/>
           <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
         </svg>
       );
@@ -1195,7 +1197,7 @@
           )}
 
           {/* Toast */}
-          {showToast && (
+          {toastMsg && (
             <div key={toastKey} className="toast" role="status" aria-live="polite" aria-atomic="true">
               {toastMsg}
             </div>
