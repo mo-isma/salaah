@@ -8,7 +8,11 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="salaah.co" />
   <meta name="twitter:description" content="Your next prayer, wherever you are" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="salaah" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>salaah.co</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
@@ -23,7 +27,7 @@
       --accent: #5e8460;
       --border: #1a1a1a;
       --border-faint: rgba(26,26,26,0.15);
-      --muted: #888;
+      --muted: #767676;
       --accent-faint: rgba(94,132,96,0.08);
     }
     @media (prefers-color-scheme: dark) {
@@ -33,7 +37,7 @@
         --accent: #8cc48e;
         --border: #f0ece4;
         --border-faint: rgba(240,236,228,0.15);
-        --muted: #777;
+        --muted: #8a8a8a;
         --accent-faint: rgba(140,196,142,0.1);
       }
     }
@@ -43,7 +47,7 @@
       --accent: #8cc48e;
       --border: #f0ece4;
       --border-faint: rgba(240,236,228,0.15);
-      --muted: #777;
+      --muted: #8a8a8a;
       --accent-faint: rgba(140,196,142,0.1);
       color-scheme: dark;
     }
@@ -53,7 +57,7 @@
       --accent: #5e8460;
       --border: #1a1a1a;
       --border-faint: rgba(26,26,26,0.15);
-      --muted: #888;
+      --muted: #767676;
       --accent-faint: rgba(94,132,96,0.08);
       color-scheme: light;
     }
@@ -130,6 +134,7 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+      flex-wrap: wrap;
     }
     .change-btn {
       background: transparent;
@@ -169,6 +174,7 @@
       position: relative;
       background: transparent;
       transition: background 0.2s;
+      flex-shrink: 0;
     }
     .toggle-thumb {
       width: 8px;
@@ -187,6 +193,9 @@
       text-transform: uppercase;
       color: var(--muted);
       user-select: none;
+      white-space: nowrap;
+    }
+    .toggle-label-fixed {
       width: 2.8rem;
       text-align: left;
     }
@@ -219,12 +228,43 @@
       color: var(--fg);
       font-family: 'Courier Prime', monospace;
       font-size: max(16px, clamp(1rem, 3vw, 1.25rem));
-      padding: 0.5rem 0;
+      padding: 0.5rem 2.5rem 0.5rem 0;
       outline: none;
       letter-spacing: 0.02em;
     }
     .city-input::placeholder { color: var(--muted); }
     .city-input:focus { caret-color: var(--accent); }
+    .city-input-wrap {
+      position: relative;
+      width: 100%;
+    }
+    .gps-btn {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: var(--muted);
+      opacity: 0.45;
+      transition: opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 36px;
+    }
+    .gps-btn:hover:not(:disabled) { opacity: 1; }
+    .gps-btn:disabled { cursor: default; }
+    .gps-error {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+      margin-top: 0.6rem;
+    }
     .suggestions {
       position: absolute;
       top: 100%;
@@ -248,7 +288,7 @@
       border-bottom: 1px solid var(--border-faint);
     }
     .suggestion-item:last-child { border-bottom: none; }
-    .suggestion-item:hover { background: var(--accent-faint); }
+    .suggestion-item:hover, .suggestion-item:focus { background: var(--accent-faint); outline: none; }
     .suggestion-city { font-weight: 700; letter-spacing: 0.02em; }
     .suggestion-meta {
       font-size: 0.78rem;
@@ -315,7 +355,6 @@
       font-size: 0.6rem;
       letter-spacing: 0.08em;
       color: var(--muted);
-      opacity: 0.35;
       pointer-events: none;
       z-index: 10;
       padding: 1.2rem 1rem 0.5rem;
@@ -333,6 +372,92 @@
         padding: 0.3rem 1rem;
         padding-bottom: calc(0.3rem + env(safe-area-inset-bottom));
       }
+    }
+    /* ─── Bookmark button ──────────────────────────────────────────────────── */
+    .bookmark-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem 0.1rem;
+      display: inline-flex;
+      align-items: center;
+      opacity: 0.5;
+      transition: opacity 0.15s;
+      vertical-align: middle;
+      min-height: 32px;
+    }
+    .bookmark-btn:hover { opacity: 1; }
+    /* ─── Toast ────────────────────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--fg);
+      color: var(--bg);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.2rem;
+      z-index: 300;
+      pointer-events: none;
+      white-space: nowrap;
+      animation: toastAnim 2s ease forwards;
+    }
+    @keyframes toastAnim {
+      0%   { opacity: 0; transform: translateX(-50%) translateY(4px); }
+      15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+      70%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(0); }
+    }
+    /* ─── Phase fade ───────────────────────────────────────────────────────── */
+    .phase-fade {
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    /* ─── Skip link & screen-reader helpers ────────────────────────────────── */
+    .skip-link {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+      text-decoration: none;
+    }
+    .skip-link:focus {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      width: auto;
+      height: auto;
+      padding: 0.5rem 1rem;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+      z-index: 9999;
+      background: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
     }
     /* ─── Last Third Mode ───────────────────────────────────────────────────── */
     .last-third-screen {
@@ -409,13 +534,59 @@
       align-items: center;
     }
     .last-third-footer a:hover, .last-third-footer button:hover { opacity: 0.8; }
+    /* ─── Install screen ────────────────────────────────────────────────────── */
+    .install-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg);
+      color: var(--fg);
+      z-index: 150;
+      overflow-y: auto;
+      padding: clamp(3rem, 12vmin, 6rem) 1.5rem 5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .install-content {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .install-step {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      align-items: flex-start;
+    }
+    .install-step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      color: var(--accent);
+      line-height: 1.1;
+      min-width: 1.2rem;
+    }
+    .install-step-text {
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+      line-height: 1.7;
+      color: var(--fg);
+      padding-top: 0.15rem;
+    }
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="root"></div>
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
     const PRAYER_KEYS = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
+    // ─── Device / context detection (stable, computed once) ────────────────
+    const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+                      (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024);
+    const IS_STANDALONE = window.matchMedia('(display-mode: standalone)').matches ||
+                          !!(navigator.standalone);
+    const IS_IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const IS_ANDROID = /Android/i.test(navigator.userAgent);
 
     function secondsToHMS(secs) {
       const h = Math.floor(secs / 3600);
@@ -500,8 +671,6 @@
     }
 
     // ─── Somaliland city list ────────────────────────────────────────────────
-    // All cities whose country is "Somalia" or "Somaliland" default to "Somalia".
-    // Only these named cities display as "Somaliland".
     const SOMALILAND_CITIES = new Set([
       "borama", "zeila", "lughaya", "baki", "berbera", "sheikh", "bulhar", "karin",
       "el-darad", "el darad", "mandera", "laba-yo", "laba yo",
@@ -529,7 +698,6 @@
             country = "Palestinian Territories";
           }
         }
-        // Somalia / Somaliland: default to "Somalia", override only for the named list.
         if (country.toLowerCase().includes("somalia") || country.toLowerCase() === "somaliland") {
           const cityLower = r.name ? r.name.toLowerCase() : "";
           country = SOMALILAND_CITIES.has(cityLower) ? "Somaliland" : "Somalia";
@@ -545,13 +713,34 @@
       });
     }
 
+    // ─── Reverse geocode GPS coords → place object ──────────────────────────
+    async function reverseGeocode(lat, lon) {
+      const res = await fetchWithTimeout(
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`,
+        8000
+      );
+      const data = await res.json();
+      let city = data.city || data.locality || data.principalSubdivision || data.countryName || "";
+      let country = data.countryName || "";
+      let region = data.principalSubdivision || "";
+      let timezone = data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (country.toLowerCase().includes("somalia") || country.toLowerCase() === "somaliland") {
+        const cityLower = city.toLowerCase();
+        country = SOMALILAND_CITIES.has(cityLower) ? "Somaliland" : "Somalia";
+      }
+      return { name: city, admin: region, country, lat, lon, timezone };
+    }
+
+    // ─── CitySearch component ────────────────────────────────────────────────
     function CitySearch({ onSelect }) {
       const [query, setQuery] = useState("");
       const [results, setResults] = useState([]);
       const [searching, setSearching] = useState(false);
       const [open, setOpen] = useState(false);
+      const [gpsState, setGpsState] = useState(null); // null | "loading" | "denied" | "error"
       const debounceRef = useRef(null);
       const wrapRef = useRef(null);
+
       useEffect(() => {
         function handleClick(e) {
           if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
@@ -559,6 +748,7 @@
         document.addEventListener("mousedown", handleClick);
         return () => document.removeEventListener("mousedown", handleClick);
       }, []);
+
       function handleChange(e) {
         const val = e.target.value;
         setQuery(val);
@@ -578,6 +768,7 @@
           }
         }, 320);
       }
+
       function handleSelect(place) {
         const label = [place.name, place.admin, place.country].filter(Boolean).join(", ");
         setQuery(label);
@@ -585,30 +776,88 @@
         setResults([]);
         onSelect(place);
       }
+
+      async function handleGPS() {
+        if (!navigator.geolocation) { setGpsState("error"); return; }
+        setGpsState("loading");
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            try {
+              const place = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+              const label = [place.name, place.admin, place.country].filter(Boolean).join(", ");
+              setQuery(label);
+              setGpsState(null);
+              setTimeout(() => onSelect(place), 500);
+            } catch {
+              setGpsState("error");
+            }
+          },
+          (err) => {
+            setGpsState(err.code === 1 ? "denied" : "error");
+          },
+          { timeout: 10000, maximumAge: 60000 }
+        );
+      }
+
       return (
-        <div ref={wrapRef} style={{ position: "relative", width: "100%" }}>
-          <input
-            className="city-input"
-            value={query}
-            onChange={handleChange}
-            onFocus={() => { if (results.length > 0) setOpen(true); }}
-            placeholder="Type any city or town..."
-            autoComplete="off"
-            spellCheck={false}
-            autoFocus
-          />
+        <div ref={wrapRef} role="search" aria-label="Search for a city" style={{ position: "relative", width: "100%" }}>
+          <div className="city-input-wrap">
+            <input
+              className="city-input"
+              value={query}
+              onChange={handleChange}
+              onFocus={() => { if (results.length > 0) setOpen(true); }}
+              placeholder="Type any city or town..."
+              autoComplete="off"
+              spellCheck={false}
+              autoFocus
+              aria-label="Search for a city or town"
+            />
+            <button
+              className="gps-btn"
+              onClick={handleGPS}
+              aria-label="Detect my location"
+              disabled={gpsState === "loading"}
+            >
+              {gpsState === "loading" ? (
+                <svg viewBox="0 0 24 24" width="16" height="16" style={{ fill: "var(--muted)", animation: "blink 1.2s step-end infinite" }}>
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" fill="none" />
+                  <circle cx="12" cy="12" r="3" fill="var(--muted)" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
+          {gpsState === "denied" && (
+            <p className="gps-error">Enable location access in your browser settings to detect your city automatically</p>
+          )}
+          {gpsState === "error" && (
+            <p className="gps-error">Could not detect your location. Try searching manually.</p>
+          )}
           {searching && <p className="searching-hint">Searching_</p>}
           {open && !searching && query.trim().length >= 2 && results.length === 0 && (
-            <ul className="suggestions">
-              <li className="suggestion-item">
+            <ul className="suggestions" role="listbox" aria-label="Search results">
+              <li className="suggestion-item" role="option" aria-selected="false">
                 <div className="suggestion-meta">No results — try a different spelling</div>
               </li>
             </ul>
           )}
           {open && results.length > 0 && (
-            <ul className="suggestions">
+            <ul className="suggestions" role="listbox" aria-label="Search results">
               {results.map((r, i) => (
-                <li key={i} className="suggestion-item" onMouseDown={() => handleSelect(r)}>
+                <li
+                  key={i}
+                  className="suggestion-item"
+                  role="option"
+                  aria-selected="false"
+                  onMouseDown={() => handleSelect(r)}
+                  tabIndex={0}
+                  onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleSelect(r); } }}
+                >
                   <div className="suggestion-city">{r.name}</div>
                   <div className="suggestion-meta">{[r.admin, r.country].filter(Boolean).join(", ")}</div>
                 </li>
@@ -620,7 +869,6 @@
     }
 
     // ─── Last third calculation ──────────────────────────────────────────────
-    // Takes the exact Maghrib and Fajr strings for the relevant night.
     function getLastThirdData(maghribStr, fajrStr, timezone) {
       const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
       const nowParts = new Date().toLocaleTimeString("en-GB", {
@@ -647,6 +895,7 @@
       return { inLastThird, secsUntil };
     }
 
+    // ─── App ─────────────────────────────────────────────────────────────────
     function App() {
       const [phase, setPhase] = useState("form");
       const [location, setLocation] = useState(null);
@@ -660,7 +909,14 @@
       const [lastThirdMode, setLastThirdMode] = useState(false);
       const [lastThirdData, setLastThirdData] = useState(null);
       const [adjTimes, setAdjTimes] = useState(null);
+      // New state
+      const [homeCitySaved, setHomeCitySaved] = useState(false);
+      const [showToast, setShowToast] = useState(false);
+      const [toastKey, setToastKey] = useState(0);
+      const [autoDetect, setAutoDetect] = useState(false);
+      const [srWelcome, setSrWelcome] = useState(false);
 
+      // ─── Theme effect ──────────────────────────────────────────────────────
       useEffect(() => {
         if (themeOverride === 'dark') {
           document.documentElement.setAttribute('data-theme', 'dark');
@@ -677,6 +933,7 @@
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       }
 
+      // ─── loadPrayers ───────────────────────────────────────────────────────
       async function loadPrayers(lat, lon, city, region, country, timezone, dayOffset) {
         setPhase("loading");
         try {
@@ -701,20 +958,94 @@
           setLocation({ city, region, country, timezone: resolvedTz, method: result.method, _lat: lat, _lon: lon });
           setNextPrayer(getNextPrayer(result.times, resolvedTz));
           setPhase("ready");
+          document.title = "salaah.co \u2014 " + city;
         } catch (err) {
-          const msg = err && err.name === "AbortError"
+          document.title = "salaah.co";
+          const msg = (err && err.name === "AbortError")
             ? "Request timed out. Check your connection and try again."
-            : "Could not load prayer times. Check your connection and try again.";
+            : "Prayer times couldn't be loaded right now. Try again shortly.";
           setErrorMsg(msg);
           setPhase("error");
         }
       }
 
+      // ─── Apply ampm logic for a country ───────────────────────────────────
+      function applyAmPm(country) {
+        const ampmCountries = ["united states", "philippines", "australia", "new zealand", "canada"];
+        const c = (country || "").toLowerCase();
+        if (ampmCountries.some(x => c.includes(x))) setUse24h(false);
+        else setUse24h(true);
+      }
+
+      // ─── GPS auto-detect (used on startup in PWA mode) ────────────────────
+      function doGpsAutoDetect(fallbackSaved) {
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            try {
+              const place = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+              applyAmPm(place.country);
+              loadPrayers(place.lat, place.lon, place.name, place.admin, place.country, place.timezone);
+            } catch {
+              if (fallbackSaved) startFromSaved(fallbackSaved);
+              else setPhase("form");
+            }
+          },
+          () => {
+            if (fallbackSaved) startFromSaved(fallbackSaved);
+            else setPhase("form");
+          },
+          { timeout: 10000, maximumAge: 60000 }
+        );
+      }
+
+      // ─── Load from saved city object ───────────────────────────────────────
+      function startFromSaved(saved) {
+        applyAmPm(saved.country);
+        loadPrayers(saved.lat, saved.lon, saved.name, saved.admin, saved.country, saved.timezone);
+      }
+
+      // ─── On mount: SR welcome + restore saved city ─────────────────────────
+      useEffect(() => {
+        // Screen-reader one-time welcome
+        if (!localStorage.getItem('sr-welcomed')) {
+          localStorage.setItem('sr-welcomed', '1');
+          setSrWelcome(true);
+        }
+        // Auto-detect preference
+        const ad = localStorage.getItem('salaah-auto-detect') === 'true';
+        setAutoDetect(ad);
+        // Saved city
+        const savedRaw = localStorage.getItem('salaah-home-city');
+        if (savedRaw) {
+          try {
+            const saved = JSON.parse(savedRaw);
+            if (IS_STANDALONE && ad && navigator.geolocation) {
+              if (navigator.permissions) {
+                navigator.permissions.query({ name: 'geolocation' })
+                  .then(perm => {
+                    if (perm.state === 'granted') doGpsAutoDetect(saved);
+                    else startFromSaved(saved);
+                  })
+                  .catch(() => startFromSaved(saved));
+              } else {
+                startFromSaved(saved);
+              }
+            } else {
+              startFromSaved(saved);
+            }
+          } catch {
+            localStorage.removeItem('salaah-home-city');
+          }
+        }
+      }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+      // ─── Re-load when school changes ───────────────────────────────────────
       useEffect(() => {
         if (!location) return;
         loadPrayers(location._lat, location._lon, location.city, location.region, location.country, location.timezone);
-      }, [school]);
+      }, [school]); // eslint-disable-line react-hooks/exhaustive-deps
 
+      // ─── Countdown tick ────────────────────────────────────────────────────
       useEffect(() => {
         if (phase !== "ready" || !prayerTimes || !location) return;
         const tz = location.timezone;
@@ -738,27 +1069,72 @@
         tick();
         const id = setInterval(tick, 1000);
         return () => clearInterval(id);
-      }, [phase, prayerTimes, location]);
+      }, [phase, prayerTimes, location]); // eslint-disable-line react-hooks/exhaustive-deps
 
-      async function handleCitySelect(place) {
-        const ampmCountries = ["united states", "philippines", "australia", "new zealand", "canada"];
-        const c = (place.country || "").toLowerCase();
-        if (ampmCountries.some(x => c.includes(x))) {
-          setUse24h(false);
+      // ─── Sync bookmark state when location changes ─────────────────────────
+      useEffect(() => {
+        if (!location) { setHomeCitySaved(false); return; }
+        const savedRaw = localStorage.getItem('salaah-home-city');
+        if (savedRaw) {
+          try {
+            const s = JSON.parse(savedRaw);
+            setHomeCitySaved(
+              Math.abs(s.lat - location._lat) < 0.01 &&
+              Math.abs(s.lon - location._lon) < 0.01
+            );
+          } catch { setHomeCitySaved(false); }
         } else {
-          setUse24h(true);
+          setHomeCitySaved(false);
         }
+      }, [location]);
+
+      // ─── Bookmark toggle ───────────────────────────────────────────────────
+      function toggleBookmark() {
+        if (homeCitySaved) {
+          localStorage.removeItem('salaah-home-city');
+          setHomeCitySaved(false);
+        } else {
+          const place = {
+            name: location.city,
+            admin: location.region,
+            country: location.country,
+            lat: location._lat,
+            lon: location._lon,
+            timezone: location.timezone,
+          };
+          localStorage.setItem('salaah-home-city', JSON.stringify(place));
+          setHomeCitySaved(true);
+          // Show toast
+          setToastKey(k => k + 1);
+          setShowToast(true);
+          setTimeout(() => setShowToast(false), 2500);
+          // Ask service worker to cache monthly prayer data
+          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            const today = new Date();
+            const method = getMethodForCountry(location.country);
+            const url = `https://api.aladhan.com/v1/calendar/${today.getFullYear()}/${today.getMonth() + 1}?latitude=${location._lat}&longitude=${location._lon}&method=${method}&school=0`;
+            navigator.serviceWorker.controller.postMessage({ type: 'CACHE_URL', url });
+          }
+        }
+      }
+
+      // ─── Auto-detect toggle ────────────────────────────────────────────────
+      function toggleAutoDetect() {
+        const newVal = !autoDetect;
+        setAutoDetect(newVal);
+        localStorage.setItem('salaah-auto-detect', String(newVal));
+      }
+
+      // ─── City select ───────────────────────────────────────────────────────
+      async function handleCitySelect(place) {
+        applyAmPm(place.country);
         await loadPrayers(place.lat, place.lon, place.name, place.admin, place.country, place.timezone);
         window.scrollTo(0, 0);
       }
 
-      // Before Fajr → fetch yesterday (offset -1), use yesterday's Maghrib + today's Fajr
-      // After Fajr  → fetch tomorrow (offset +1), use today's Maghrib + tomorrow's Fajr
+      // ─── Adjacent day for last third ───────────────────────────────────────
       useEffect(() => {
-        if (!lastThirdMode || !prayerTimes || !location) {
-          setAdjTimes(null);
-          return;
-        }
+        if (!lastThirdMode || !prayerTimes || !location) { setAdjTimes(null); return; }
         let cancelled = false;
         const tz = location.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
         const nowParts = new Date().toLocaleTimeString("en-GB", {
@@ -772,8 +1148,9 @@
           .then(result => { if (!cancelled) setAdjTimes({ times: result.times, offset }); })
           .catch(() => { if (!cancelled) setAdjTimes(null); });
         return () => { cancelled = true; };
-      }, [lastThirdMode, prayerTimes, location]);
+      }, [lastThirdMode, prayerTimes, location]); // eslint-disable-line react-hooks/exhaustive-deps
 
+      // ─── Last third background ─────────────────────────────────────────────
       useEffect(() => {
         if (lastThirdMode && lastThirdData) {
           document.body.style.background = lastThirdData.inLastThird
@@ -782,8 +1159,9 @@
         } else if (!lastThirdMode) {
           document.body.style.background = "";
         }
-      }, [lastThirdMode, lastThirdData, themeOverride]);
+      }, [lastThirdMode, lastThirdData, themeOverride]); // eslint-disable-line react-hooks/exhaustive-deps
 
+      // ─── Last third tick ───────────────────────────────────────────────────
       useEffect(() => {
         if (!lastThirdMode || !prayerTimes || !location || !adjTimes) return;
         const tick = () => {
@@ -803,6 +1181,7 @@
         return () => clearInterval(id);
       }, [lastThirdMode, prayerTimes, location, adjTimes]);
 
+      // ─── Format time helper ────────────────────────────────────────────────
       const formatTime = (prayer) => {
         if (!prayer) return "";
         const [h, m] = prayer.timeStr.split(":").map(Number);
@@ -815,176 +1194,346 @@
         }
       };
 
+      // ─── Bookmark SVG ──────────────────────────────────────────────────────
+      const BookmarkIcon = ({ filled }) => filled ? (
+        <svg viewBox="0 0 24 24" width="13" height="13" style={{ fill: "var(--accent)", flexShrink: 0 }}>
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        </svg>
+      );
+
+      // ─── Render ────────────────────────────────────────────────────────────
       return (
         <>
-        {lastThirdMode && phase === "ready" && prayerTimes && location && (
-          <div
-            className={"last-third-screen " + (lastThirdData && lastThirdData.inLastThird ? "in-third" : "not-in")}
-            style={{
-              background: lastThirdData && lastThirdData.inLastThird
-                ? (isDarkMode() ? "#1a3d1a" : "#dff2df")
-                : (isDarkMode() ? "#3d1a1a" : "#f2dfdf"),
-              minHeight: "100vh",
-              position: "fixed",
-              top: 0, left: 0, right: 0, bottom: 0,
-              zIndex: 100,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              padding: "clamp(3rem, 12vmin, 6rem) 1.5rem 5rem",
-              width: "100%",
-              maxWidth: "100%",
-              overflowY: "auto",
-            }}
-          >
-            <p className="last-third-city">{location.city}{location.country ? ` — ${location.country}` : ""}</p>
-            <div className="rule" style={{ marginBottom: "2rem", marginTop: 0, background: lastThirdData && lastThirdData.inLastThird ? "rgba(94,158,94,0.3)" : "rgba(196,94,94,0.3)" }} />
-            {!adjTimes ? (
-              <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.85rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#8cc48e" : "#3d7a3d", opacity: 0.6, animation: "blink 1.2s step-end infinite" }}>Calculating_</p>
-            ) : lastThirdData && lastThirdData.inLastThird ? (
-              <>
-                <div className="last-third-status" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }}>
-                  It is the last third<br />of the night
-                </div>
-                <p className="last-third-label">ends in</p>
-                <div className="last-third-countdown" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }}>
-                  {secondsToHMS(lastThirdData.secsUntil)}
-                </div>
-                {(() => {
-                  const tz = location.timezone;
-                  const now = new Date();
-                  const target = new Date(now.getTime() + lastThirdData.secsUntil * 1000);
-                  const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
-                  return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#8cc48e" : "#3d7a3d", opacity: 0.6, marginTop: "0.5rem" }}>ends at {timeStr}</p>;
-                })()}
-              </>
-            ) : (
-              <>
-                <div className="last-third-status" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }}>
-                  Not yet the last<br />third of the night
-                </div>
-                <p className="last-third-label">begins in</p>
-                <div className="last-third-countdown" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }}>
-                  {lastThirdData ? secondsToHMS(lastThirdData.secsUntil) : "—"}
-                </div>
-                {lastThirdData && (() => {
-                  const tz = location.timezone;
-                  const now = new Date();
-                  const target = new Date(now.getTime() + lastThirdData.secsUntil * 1000);
-                  const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
-                  return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#c48e8e" : "#b04040", opacity: 0.6, marginTop: "0.5rem" }}>begins at {timeStr}</p>;
-                })()}
-              </>
-            )}
-            <div className="last-third-footer">
-              <a href="https://sunnah.com/bukhari:7494" target="_blank" rel="noopener noreferrer" style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>hadith</a>
-              <button onClick={() => setLastThirdMode(false)} style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>back</button>
-            </div>
-          </div>
-        )}
-        {(phase === "ready" || phase === "form") && (
-          <button
-            onClick={() => setThemeOverride(prev => {
-              if (prev === null) return isDarkMode() ? 'light' : 'dark';
-              if (prev === 'dark') return 'light';
-              return 'dark';
-            })}
-            style={{ position: "fixed", top: "1rem", right: "1rem", background: "transparent", border: "none", cursor: "pointer", opacity: 0.3, transition: "opacity 0.15s", zIndex: 50, padding: "0.5rem", minHeight: "44px", minWidth: "44px", display: "flex", alignItems: "center", justifyContent: "center" }}
-            onMouseEnter={e => e.currentTarget.style.opacity = 0.7}
-            onMouseLeave={e => e.currentTarget.style.opacity = 0.3}
-          >
-            {(themeOverride === 'dark' || (themeOverride === null && isDarkMode())) ? (
-              <svg viewBox="0 0 24 24" width="14" height="14" style={{ fill: "var(--fg)" }}><path d="M12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0-5a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm0 17a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1zm9-9h1a1 1 0 0 1 0 2h-1a1 1 0 0 1 0-2zM3 11h1a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2zm15.364-6.364.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414zM6.343 17.657l.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414zm12.728 0-.707.707a1 1 0 0 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 1.414zM6.343 6.343l-.707.707A1 1 0 0 1 4.222 5.636l.707-.707a1 1 0 0 1 1.414 1.414z"/></svg>
-            ) : (
-              <svg viewBox="0 0 24 24" width="14" height="14" style={{ fill: "var(--fg)" }}><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
-            )}
-          </button>
-        )}
-        <div className="shell">
-          {phase === "loading" && (
-            <p className="loading-msg">Fetching prayer times_</p>
-          )}
-          {phase === "form" && (
-            <div>
-              <div className="form-title">Where are you?</div>
-              <p className="form-subtitle">Enter your city to see your next prayer</p>
-              <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
+          {/* Screen-reader welcome (one-time, visually hidden) */}
+          {srWelcome && (
+            <div aria-live="assertive" aria-atomic="true" className="sr-only">
+              Welcome to salaah.co. This app is fully accessible by screen reader. Use Tab to navigate and Enter to select.
             </div>
           )}
-          {phase === "ready" && nextPrayer && (
-            <div>
-              <p className="label">Next prayer</p>
-              <div className="prayer-name">{nextPrayer.name}</div>
-              <div className="prayer-time">{formatTime(nextPrayer)}</div>
-              <div className="rule" />
-              <p className="label">Time remaining</p>
-              <div className="countdown">{countdown}</div>
-              <div className="rule" style={{ margin: "1.5rem 0" }} />
-              {prayerTimes && (
-                <div className="all-prayers">
-                  {["Fajr","Dhuhr","Asr","Maghrib","Isha"].map(name => (
-                    <div key={name} className={"prayer-row" + (nextPrayer && nextPrayer.name === name ? " active" : "")}>
-                      <span className="prayer-row-name">{name}</span>
-                      <span className="prayer-row-time">{formatTime({ timeStr: prayerTimes[name] })}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className="rule" />
-              {location && (
-                <p className="location-line">
-                  <span>
-                    {location.city}
-                    {location.region && location.region !== location.city ? `, ${location.region}` : ""}
-                    {location.country ? ` — ${location.country}` : ""}
-                    {location.city && location.city.toLowerCase() === "garadag" && location.country && location.country.toLowerCase() === "somaliland" ? " (BIG UP!)" : ""}
-                    {location.city && location.city.toLowerCase() === "hobyo" ? " (best beach town on earth!)" : ""}
-                  </span>
-                  <div className="location-controls">
-                    <button className="change-btn" onClick={() => { setPhase("form"); setPrayerTimes(null); setNextPrayer(null); setCountdown(""); setLocation(null); }}>
-                      change location
-                    </button>
-                    <button className="change-btn" onClick={() => setLastThirdMode(true)}>
-                      last third
-                    </button>
-                    <div className="time-toggle" onClick={() => setUse24h(p => !p)}>
-                      <div className="toggle-track">
-                        <div className={"toggle-thumb" + (use24h ? "" : " right")} />
-                      </div>
-                      <span className="toggle-label">{use24h ? "am/pm" : "24h"}</span>
-                    </div>
-                  </div>
-                </p>
-              )}
+
+          {/* Toast */}
+          {showToast && (
+            <div key={toastKey} className="toast" role="status" aria-live="polite" aria-atomic="true">
+              Home city saved
             </div>
           )}
-          {phase === "error" && (
-            <div>
-              <p className="error-msg">{errorMsg}</p>
-              <button className="retry" onClick={() => { setPhase("form"); setErrorMsg(""); }}>
-                Try again
-              </button>
-            </div>
-          )}
-        </div>
-        {location && location.method && METHOD_INFO[location.method] && (
-          <p className="method-note">
-            {METHOD_INFO[location.method].name} · Fajr {METHOD_INFO[location.method].fajr} · Isha {METHOD_INFO[location.method].isha}
-            {" · "}
-            <span
-              onClick={() => setSchool(s => s === 0 ? 1 : 0)}
-              style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}
+
+          {/* Last Third Screen */}
+          {lastThirdMode && phase === "ready" && prayerTimes && location && (
+            <div
+              className="last-third-screen"
+              style={{
+                background: lastThirdData && lastThirdData.inLastThird
+                  ? (isDarkMode() ? "#1a3d1a" : "#dff2df")
+                  : (isDarkMode() ? "#3d1a1a" : "#f2dfdf"),
+                position: "fixed",
+                top: 0, left: 0, right: 0, bottom: 0,
+                zIndex: 100,
+                overflowY: "auto",
+              }}
             >
-              {school === 0 ? "Shafi'i / Maliki / Hanbali" : "Hanafi"} Asr
-            </span>
-          </p>
-        )}
+              <p className="last-third-city">{location.city}{location.country ? ` \u2014 ${location.country}` : ""}</p>
+              <div className="rule" style={{ marginBottom: "2rem", marginTop: 0, background: lastThirdData && lastThirdData.inLastThird ? "rgba(94,158,94,0.3)" : "rgba(196,94,94,0.3)" }} />
+              {!adjTimes ? (
+                <p role="status" style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.85rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#8cc48e" : "#3d7a3d", opacity: 0.6, animation: "blink 1.2s step-end infinite" }}>Calculating...</p>
+              ) : lastThirdData && lastThirdData.inLastThird ? (
+                <div aria-live="polite" aria-atomic="true">
+                  <div className="last-third-status" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }}>
+                    It is the last third<br />of the night
+                  </div>
+                  <p className="last-third-label">ends in</p>
+                  <div className="last-third-countdown" style={{ color: isDarkMode() ? "#8cc48e" : "#3d7a3d" }} aria-label={"Time remaining: " + secondsToHMS(lastThirdData.secsUntil)}>
+                    {secondsToHMS(lastThirdData.secsUntil)}
+                  </div>
+                  {(() => {
+                    const tz = location.timezone;
+                    const now = new Date();
+                    const target = new Date(now.getTime() + lastThirdData.secsUntil * 1000);
+                    const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
+                    return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#8cc48e" : "#3d7a3d", opacity: 0.6, marginTop: "0.5rem" }}>ends at {timeStr}</p>;
+                  })()}
+                </div>
+              ) : (
+                <div aria-live="polite" aria-atomic="true">
+                  <div className="last-third-status" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }}>
+                    Not yet the last<br />third of the night
+                  </div>
+                  <p className="last-third-label">begins in</p>
+                  <div className="last-third-countdown" style={{ color: isDarkMode() ? "#c48e8e" : "#b04040" }} aria-label={"Time remaining: " + (lastThirdData ? secondsToHMS(lastThirdData.secsUntil) : "")}>
+                    {lastThirdData ? secondsToHMS(lastThirdData.secsUntil) : "\u2014"}
+                  </div>
+                  {lastThirdData && (() => {
+                    const tz = location.timezone;
+                    const now = new Date();
+                    const target = new Date(now.getTime() + lastThirdData.secsUntil * 1000);
+                    const timeStr = target.toLocaleTimeString("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: !use24h });
+                    return <p style={{ fontFamily: "Courier Prime, monospace", fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: isDarkMode() ? "#c48e8e" : "#b04040", opacity: 0.6, marginTop: "0.5rem" }}>begins at {timeStr}</p>;
+                  })()}
+                </div>
+              )}
+              <div className="last-third-footer">
+                <a href="https://sunnah.com/bukhari:7494" target="_blank" rel="noopener noreferrer" style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>hadith</a>
+                <button
+                  onClick={toggleBookmark}
+                  style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}
+                  aria-label={homeCitySaved ? "Remove saved home city" : "Save as home city"}
+                >
+                  {homeCitySaved ? "saved" : "save city"}
+                </button>
+                <button onClick={() => setLastThirdMode(false)} style={{ color: isDarkMode() ? "#f0ece4" : "#1a1a1a" }}>back</button>
+              </div>
+            </div>
+          )}
+
+          {/* Install screen */}
+          {phase === "install" && (
+            <div className="install-screen phase-fade">
+              <div className="install-content">
+                <div className="form-title">Add to<br />home screen</div>
+                <div className="rule" />
+                {IS_IOS ? (
+                  <>
+                    <p className="label" style={{ marginBottom: "1.5rem" }}>On iPhone or iPad</p>
+                    {[
+                      ["1", "Open this page in Safari if you haven\u2019t already"],
+                      ["2", "Tap the Share icon \u2014 the box with an arrow pointing up \u2014 at the bottom of the screen"],
+                      ["3", "Scroll down and tap \u201cAdd to Home Screen\u201d"],
+                      ["4", "Tap \u201cAdd\u201d in the top right corner"],
+                    ].map(([num, text]) => (
+                      <div key={num} className="install-step">
+                        <span className="install-step-num">{num}</span>
+                        <p className="install-step-text">{text}</p>
+                      </div>
+                    ))}
+                  </>
+                ) : IS_ANDROID ? (
+                  <>
+                    <p className="label" style={{ marginBottom: "1.5rem" }}>On Android</p>
+                    {[
+                      ["1", "Tap the menu icon \u2014 three dots in the top right corner of Chrome"],
+                      ["2", "Tap \u201cAdd to Home screen\u201d"],
+                      ["3", "Tap \u201cAdd\u201d to confirm"],
+                    ].map(([num, text]) => (
+                      <div key={num} className="install-step">
+                        <span className="install-step-num">{num}</span>
+                        <p className="install-step-text">{text}</p>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <p style={{ fontSize: "0.85rem", letterSpacing: "0.03em", lineHeight: 1.7, color: "var(--fg)" }}>
+                    To add salaah to your home screen, open this page in Safari (iPhone) or Chrome (Android)
+                  </p>
+                )}
+                <div className="rule" />
+                <p className="label" style={{ marginBottom: "0.75rem" }}>Settings</p>
+                <div
+                  className="time-toggle"
+                  onClick={toggleAutoDetect}
+                  role="switch"
+                  aria-checked={autoDetect}
+                  aria-label="Auto-detect location when opening"
+                  tabIndex={0}
+                  onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleAutoDetect(); } }}
+                >
+                  <div className="toggle-track">
+                    <div className={"toggle-thumb" + (autoDetect ? " right" : "")} />
+                  </div>
+                  <span className="toggle-label">detect on open</span>
+                </div>
+                <p style={{ fontSize: "0.65rem", color: "var(--muted)", letterSpacing: "0.06em", marginTop: "0.5rem", lineHeight: 1.6 }}>
+                  When enabled, salaah will use your GPS to detect your city each time the app opens.
+                </p>
+              </div>
+              <div className="last-third-footer">
+                <button onClick={() => setPhase("ready")} style={{ color: "var(--fg)" }}>back</button>
+              </div>
+            </div>
+          )}
+
+          {/* Theme toggle */}
+          {(phase === "ready" || phase === "form" || phase === "install") && (
+            <button
+              onClick={() => setThemeOverride(prev => {
+                if (prev === null) return isDarkMode() ? 'light' : 'dark';
+                if (prev === 'dark') return 'light';
+                return 'dark';
+              })}
+              aria-label={isDarkMode() ? "Switch to light mode" : "Switch to dark mode"}
+              style={{ position: "fixed", top: "1rem", right: "1rem", background: "transparent", border: "none", cursor: "pointer", opacity: 0.3, transition: "opacity 0.15s", zIndex: 50, padding: "0.5rem", minHeight: "44px", minWidth: "44px", display: "flex", alignItems: "center", justifyContent: "center" }}
+              onMouseEnter={e => e.currentTarget.style.opacity = 0.7}
+              onMouseLeave={e => e.currentTarget.style.opacity = 0.3}
+            >
+              {(themeOverride === 'dark' || (themeOverride === null && isDarkMode())) ? (
+                <svg viewBox="0 0 24 24" width="14" height="14" style={{ fill: "var(--fg)" }}><path d="M12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0-5a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm0 17a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1zm9-9h1a1 1 0 0 1 0 2h-1a1 1 0 0 1 0-2zM3 11h1a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2zm15.364-6.364.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414zM6.343 17.657l.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414zm12.728 0-.707.707a1 1 0 0 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 1.414zM6.343 6.343l-.707.707A1 1 0 0 1 4.222 5.636l.707-.707a1 1 0 0 1 1.414 1.414z"/></svg>
+              ) : (
+                <svg viewBox="0 0 24 24" width="14" height="14" style={{ fill: "var(--fg)" }}><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+              )}
+            </button>
+          )}
+
+          {/* Main shell */}
+          <div className="shell" id="main-content">
+            {phase === "loading" && (
+              <p role="status" className="loading-msg phase-fade">Fetching prayer times_</p>
+            )}
+
+            {phase === "form" && (
+              <div className="phase-fade">
+                <div className="form-title">Where are you?</div>
+                <p className="form-subtitle">Enter your city to see your next prayer</p>
+                <CitySearch key={location ? location.city : "empty"} onSelect={handleCitySelect} />
+              </div>
+            )}
+
+            {phase === "ready" && nextPrayer && (
+              <div className="phase-fade">
+                <div aria-live="polite" aria-atomic="true">
+                  <p className="label">Next prayer</p>
+                  <div className="prayer-name">{nextPrayer.name}</div>
+                  <div className="prayer-time">{formatTime(nextPrayer)}</div>
+                  <div className="rule" />
+                  <p className="label">Time remaining</p>
+                  <div
+                    className="countdown"
+                    aria-label={"Time remaining: " + countdown}
+                  >{countdown}</div>
+                </div>
+                <div className="rule" style={{ margin: "1.5rem 0" }} />
+                {prayerTimes && (
+                  <div className="all-prayers">
+                    {["Fajr","Dhuhr","Asr","Maghrib","Isha"].map(name => (
+                      <div key={name} className={"prayer-row" + (nextPrayer && nextPrayer.name === name ? " active" : "")}>
+                        <span className="prayer-row-name">{name}</span>
+                        <span className="prayer-row-time">{formatTime({ timeStr: prayerTimes[name] })}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="rule" />
+                {location && (
+                  <p className="location-line">
+                    <span style={{ display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                      <span>
+                        {location.city}
+                        {location.region && location.region !== location.city ? `, ${location.region}` : ""}
+                        {location.country ? ` \u2014 ${location.country}` : ""}
+                        {location.city && location.city.toLowerCase() === "garadag" && location.country && location.country.toLowerCase() === "somaliland" ? " (BIG UP!)" : ""}
+                        {location.city && location.city.toLowerCase() === "hobyo" ? " (best beach town on earth!)" : ""}
+                      </span>
+                      <button
+                        className="bookmark-btn"
+                        onClick={toggleBookmark}
+                        aria-label={homeCitySaved ? "Remove saved home city" : "Save as home city"}
+                      >
+                        <BookmarkIcon filled={homeCitySaved} />
+                      </button>
+                    </span>
+                    <div className="location-controls">
+                      <button
+                        className="change-btn"
+                        onClick={() => {
+                          setPhase("form");
+                          setPrayerTimes(null);
+                          setNextPrayer(null);
+                          setCountdown("");
+                          setLocation(null);
+                          document.title = "salaah.co";
+                        }}
+                      >
+                        change location
+                      </button>
+                      <button
+                        className="change-btn"
+                        onClick={() => setLastThirdMode(true)}
+                        aria-label="View last third of the night"
+                      >
+                        last third
+                      </button>
+                      {IS_MOBILE && !IS_STANDALONE && (
+                        <button
+                          className="change-btn"
+                          onClick={() => setPhase("install")}
+                          aria-label="Add salaah to your home screen"
+                        >
+                          add to home screen
+                        </button>
+                      )}
+                      {IS_STANDALONE && (
+                        <div
+                          className="time-toggle"
+                          onClick={toggleAutoDetect}
+                          role="switch"
+                          aria-checked={autoDetect}
+                          aria-label="Auto-detect location when opening"
+                          tabIndex={0}
+                          onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleAutoDetect(); } }}
+                        >
+                          <div className="toggle-track">
+                            <div className={"toggle-thumb" + (autoDetect ? " right" : "")} />
+                          </div>
+                          <span className="toggle-label">detect on open</span>
+                        </div>
+                      )}
+                      <div
+                        className="time-toggle"
+                        onClick={() => setUse24h(p => !p)}
+                        role="switch"
+                        aria-checked={use24h}
+                        aria-label="Time format"
+                        tabIndex={0}
+                        onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setUse24h(p => !p); } }}
+                      >
+                        <div className="toggle-track">
+                          <div className={"toggle-thumb" + (use24h ? "" : " right")} />
+                        </div>
+                        <span className="toggle-label toggle-label-fixed">{use24h ? "24h" : "am/pm"}</span>
+                      </div>
+                    </div>
+                  </p>
+                )}
+              </div>
+            )}
+
+            {phase === "error" && (
+              <div role="status" className="phase-fade">
+                <p className="error-msg">{errorMsg}</p>
+                <button className="retry" onClick={() => { setPhase("form"); setErrorMsg(""); document.title = "salaah.co"; }}>
+                  Try again
+                </button>
+              </div>
+            )}
+          </div>
+
+          {location && location.method && METHOD_INFO[location.method] && (
+            <p className="method-note">
+              {METHOD_INFO[location.method].name} · Fajr {METHOD_INFO[location.method].fajr} · Isha {METHOD_INFO[location.method].isha}
+              {" · "}
+              <span
+                onClick={() => setSchool(s => s === 0 ? 1 : 0)}
+                style={{ cursor: "pointer", pointerEvents: "auto", textDecoration: "underline", textUnderlineOffset: "2px", opacity: 0.7 }}
+              >
+                {school === 0 ? "Shafi\u2019i / Maliki / Hanbali" : "Hanafi"} Asr
+              </span>
+            </p>
+          )}
         </>
       );
     }
 
     const root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(<App />);
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+      });
+    }
   </script>
   <script data-goatcounter="https://salaah.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
