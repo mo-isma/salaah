@@ -391,9 +391,9 @@
     /* ─── Toast ────────────────────────────────────────────────────────────── */
     .toast {
       position: fixed;
-      bottom: 4rem;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(-50%);
       background: var(--fg);
       color: var(--bg);
       font-family: 'Courier Prime', monospace;
@@ -407,10 +407,10 @@
       opacity: 0;
     }
     @keyframes toastAnim {
-      0%   { opacity: 0; transform: translateX(-50%) translateY(4px); }
-      10%  { opacity: 1; transform: translateX(-50%) translateY(0); }
-      75%  { opacity: 1; transform: translateX(-50%) translateY(0); }
-      100% { opacity: 0; transform: translateX(-50%) translateY(0); }
+      0%   { opacity: 0; transform: translateX(-50%) translateY(calc(-50% + 4px)); }
+      10%  { opacity: 1; transform: translateX(-50%) translateY(-50%); }
+      75%  { opacity: 1; transform: translateX(-50%) translateY(-50%); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-50%); }
     }
     /* ─── Phase fade ───────────────────────────────────────────────────────── */
     .phase-fade {
@@ -933,6 +933,7 @@
       const [srWelcome, setSrWelcome] = useState(false);
       const toastTimerRef = useRef(null);
       const toastRef = useRef(null);
+      const toastMounted = useRef(false);
 
       // ─── Theme effect ──────────────────────────────────────────────────────
       useEffect(() => {
@@ -1003,12 +1004,10 @@
 
       // ─── On mount: SR welcome + restore saved city ─────────────────────────
       useEffect(() => {
-        // Screen-reader one-time welcome
         if (!localStorage.getItem('sr-welcomed')) {
           localStorage.setItem('sr-welcomed', '1');
           setSrWelcome(true);
         }
-        // Saved city
         const savedRaw = localStorage.getItem('salaah-home-city');
         if (savedRaw) {
           try {
@@ -1071,6 +1070,7 @@
 
       // ─── Toast animation via DOM ref ──────────────────────────────────────
       useEffect(() => {
+        if (!toastMounted.current) { toastMounted.current = true; return; } // skip initial mount
         if (!toastRef.current) return;
         const el = toastRef.current;
         el.style.animation = 'none';
@@ -1107,7 +1107,6 @@
           localStorage.setItem('salaah-home-city', JSON.stringify(place));
           setHomeCitySaved(true);
           fireToast("City locked as home");
-          // Ask service worker to cache monthly prayer data
           if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
             const today = new Date();
             const method = getMethodForCountry(location.country);
@@ -1202,7 +1201,6 @@
       // ─── Render ────────────────────────────────────────────────────────────
       return (
         <>
-          {/* Screen-reader welcome (one-time, visually hidden) */}
           {srWelcome && (
             <div aria-live="assertive" aria-atomic="true" className="sr-only">
               Welcome to salaah.co. This app is fully accessible by screen reader. Use Tab to navigate and Enter to select.
